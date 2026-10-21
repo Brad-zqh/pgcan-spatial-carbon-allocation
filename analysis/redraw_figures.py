@@ -210,7 +210,7 @@ def save(fig,name,source,caption):
     heatmap_checks=complete_heatmap_legends(fig)
     for artist in fig.findobj(mpl.text.Text):
         artist.set_color('#000000')
-        if artist.get_text() and artist.get_gid() not in ['map_coordinate_label','map_north_label','map_scale_label','map_colourbar_label']:
+        if artist.get_text() and artist.get_gid() not in ['map_coordinate_label','map_north_label','map_scale_label','map_colourbar_label','compact_diagnostic_label']:
             artist.set_fontsize(max(8.2,min(14,artist.get_fontsize()*getattr(fig,'_font_scale',1.20))))
     fig.canvas.draw()
     north_checks=[];coordinate_checks=[];coordinate_neighbour_checks=[]
@@ -269,10 +269,13 @@ def save(fig,name,source,caption):
                      'caption_notes':notes,'panel_descriptions':panel_descriptions,'north_arrow_checks':north_checks,
                      'coordinate_label_checks':coordinate_checks,
                      'heatmap_legend_checks':heatmap_checks,
+                     'density_encoding':getattr(fig,'_density_encoding',None),
                      'typography':{'statistical_text_minimum_pt':8.2,'general_size_multiplier':getattr(fig,'_font_scale',1.20),'coordinate_labels_separately_sized':True},
                      'map_furniture_white_backdrop':False,
                      'individual_map_legends':[{'units':a._individual_map_bar.ax.xaxis.label.get_text(),**a._map_classification} for a in map_axes],
-                     'palette':'Pink - pale neutral - green; density: green low counts to pink high counts',
+                     'palette':('Pink - pale neutral - green; density: green low percentile to pink high percentile'
+                         if getattr(fig,'_density_encoding',{}).get('type')=='KDE percentile' else
+                         'Pink - pale neutral - green; density: green low counts to pink high counts'),
                      'layout':getattr(fig,'_layout',None)})
     plt.close(fig)
     print('Saved',name,flush=True)

@@ -72,6 +72,20 @@ The existing corrected input directory must contain `experiment_core.py`,
 Plotting also requires the documented source-data and basemap assets. Full
 retraining/plot regeneration is **not self-contained** without those inputs.
 
+## Current Figure 13 design
+
+Figure 13 places the PGCAN, multi-relation and ridge comparison first,
+then the remaining baselines and six controls. It plots every real paired
+cell without sampling or jitter, moves metrics outside the data area, and
+adds absolute-error ECDFs. Colour is the within-panel percentile of a
+bivariate Gaussian KDE (Scott bandwidth), **not a bin count or an error sign**.
+The compact horizontal bars show 0–100 density percentile. Numerical ties
+use log density rounded to ten decimals before average-rank assignment.
+R², RMSE and MAE are unchanged. Scientific results in v0.1.0 remain valid;
+the current main branch carries this figure-design update.
+
+![Current held-out model atlas](docs/assets/Figure_13.png)
+
 ## Data, citations and licenses
 
 Author code: MIT. Anonymous author-generated numerical outputs: CC BY 4.0.
