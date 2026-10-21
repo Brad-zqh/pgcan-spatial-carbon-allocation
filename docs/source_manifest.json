@@ -1,0 +1,163 @@
+[
+  {
+    "source": "run_model_benchmark.py",
+    "released": "analysis/run_model_benchmark.py",
+    "original_sha256": "03cc960c02ff93b81df9ebaf95f3a1b71c8c5f99e19b08a26010c576343cf9ea",
+    "released_sha256": "1e6145709b8e6d3642fada75c7e55fa4ef7377c9f854da66747c6c791b921035",
+    "adaptation": "Data-root configuration/import and optional font discovery only; equations unchanged"
+  },
+  {
+    "source": "run_direct_baselines.py",
+    "released": "analysis/run_direct_baselines.py",
+    "original_sha256": "de277dfed52af9c79cbbc68e08b072376887c78e2034829828e6398112735f0b",
+    "released_sha256": "2a574d38b61b739c3a6444a2fc9ed2f8ba466b309fbf3c7fe442f41eccea13ff",
+    "adaptation": "Data-root configuration/import and optional font discovery only; equations unchanged"
+  },
+  {
+    "source": "deep_model_analysis.py",
+    "released": "analysis/deep_model_analysis.py",
+    "original_sha256": "eebc3b1802b525b3582e7f542b00ca9bc6d3227ef0186a398605276c8fde5d27",
+    "released_sha256": "904edb826af198ccd296171c9084757212be9c8edd575408eb0bd9370939265e",
+    "adaptation": "Data-root configuration/import and optional font discovery only; equations unchanged"
+  },
+  {
+    "source": "enhanced_analysis.py",
+    "released": "analysis/enhanced_analysis.py",
+    "original_sha256": "1af5698369fb33ab479fe1547fa25ac16d7f8c0768643eb527667ca01c367fc2",
+    "released_sha256": "a755416488c916f5524c822687847bd5ad8c0e532400722c7e422ee1b59027a8",
+    "adaptation": "Data-root configuration/import and optional font discovery only; equations unchanged"
+  },
+  {
+    "source": "redraw_figures.py",
+    "released": "analysis/redraw_figures.py",
+    "original_sha256": "c7563a7da514b53ab49a186d333f1f11f7a143d95f3f129294cb5ccb1e649e0b",
+    "released_sha256": "8ee76a1a33fee4c34d107c255d506b1b9d32579720e51d51c4517434179a3f2a",
+    "adaptation": "Data-root configuration/import and optional font discovery only; equations unchanged"
+  },
+  {
+    "source": "plot_deep_analysis.py",
+    "released": "analysis/plot_deep_analysis.py",
+    "original_sha256": "a86b6004da8d2b21175ec9aac914f5902ba2ed164d9efb475ae5f5a1096c5018",
+    "released_sha256": "f32f3515ccbbc97cf32d7edc6213452714d3bb4988652da5bfab4739d1c3bd0d",
+    "adaptation": "Data-root configuration/import and optional font discovery only; equations unchanged"
+  },
+  {
+    "source": "plot_benchmark_results.py",
+    "released": "analysis/plot_benchmark_results.py",
+    "original_sha256": "3081c71e0eb104a146c6db87faab0379ba7a395c9549d58e68d313d38235c45d",
+    "released_sha256": "09d280474d8183cf9b1fa6e843a08d72cee80b889ed56bc85a30df76bd995915",
+    "adaptation": "Data-root configuration/import and optional font discovery only; equations unchanged"
+  },
+  {
+    "source": "plot_prediction_matrix.py",
+    "released": "analysis/plot_prediction_matrix.py",
+    "original_sha256": "ff15ff3ed68b4d801b364dad5ef333e67935b4649c3a25b6414d2970d64f08b6",
+    "released_sha256": "44dc9f154449ba184817ffd7eb7b1cd2203e2fad80c89f26de74af093700b221",
+    "adaptation": "Data-root configuration/import and optional font discovery only; equations unchanged"
+  },
+  {
+    "source": "plot_error_diagnostics.py",
+    "released": "analysis/plot_error_diagnostics.py",
+    "original_sha256": "f25e31ea96407a7450d5faf2fc255575267bcd747e24b3be6bd47f82a1aee8de",
+    "released_sha256": "f127af5f8641f9a7bf2bf1b0697bce0cfaef15e27271ee7fbcdefad9f1869a24",
+    "adaptation": "Data-root configuration/import and optional font discovery only; equations unchanged"
+  },
+  {
+    "source": "plot_allocation_atlas.py",
+    "released": "analysis/plot_allocation_atlas.py",
+    "original_sha256": "dd2a5077392f8f9a97a145d3ee7153c853f04362fc40bc3fd26b67b1171fa0d5",
+    "released_sha256": "e74d91a1240d07171e008e706c30604da5d82983413de0b13b3f55aebc95917b",
+    "adaptation": "Data-root configuration/import and optional font discovery only; equations unchanged"
+  },
+  {
+    "source": "study_area_map.py",
+    "released": "analysis/study_area_map.py",
+    "original_sha256": "92109c81c9eefde3f015dc56df4c7fdd57ce7e31a5c5588d2e6b0199086eeadd",
+    "released_sha256": "d5a408e30278539ff7ba56b92d4e34ebdd826d6a6af1b78a36d52374ac11c08b",
+    "adaptation": "Data-root configuration/import and optional font discovery only; equations unchanged"
+  },
+  {
+    "source": "cartography_style.py",
+    "released": "analysis/cartography_style.py",
+    "original_sha256": "9ecaf702058a0ce439981b5283a5c4e66227912ae00d8c0024e23efd6c6f489b",
+    "released_sha256": "4ee7a3a70360a8809fb9e9a4e47e72b16d54ae51d59c4e74d4a80543cd870fa1",
+    "adaptation": "Data-root configuration/import and optional font discovery only; equations unchanged"
+  },
+  {
+    "source": "map_classification.py",
+    "released": "analysis/map_classification.py",
+    "original_sha256": "3dbaa2ffe9d60f6d4b47d58ccab2fc6401f1e3f50c8a8edb6e08869a2f340fa4",
+    "released_sha256": "742607390acb0d625475bd40df9d2fcfd9d7c90a9d4db23a568d1a23ffd56200",
+    "adaptation": "Data-root configuration/import and optional font discovery only; equations unchanged"
+  },
+  {
+    "source": "visual_polish.py",
+    "released": "analysis/visual_polish.py",
+    "original_sha256": "d1aa23546fa913c0ea614fb846dd5da6a863b982227fbf0a6c3f5fc5cb038ab5",
+    "released_sha256": "3fb0776efe560ccc5b28e41940c3b0d2c6e4a49671e5ed0da68fcfbd96c42eb7",
+    "adaptation": "Data-root configuration/import and optional font discovery only; equations unchanged"
+  },
+  {
+    "source": "layerwise_architecture.py",
+    "released": "analysis/layerwise_architecture.py",
+    "original_sha256": "872d93e2b1dc07d1f39b525f25e6fb5c5cb011105e29e79205bbd17bf7c0ff1a",
+    "released_sha256": "87aa44438b29ae21d3ca9d867b9e559b16027323b2a47c24ea7b51886ccceac9",
+    "adaptation": "Data-root configuration/import and optional font discovery only; equations unchanged"
+  },
+  {
+    "source": "architecture_table.py",
+    "released": "analysis/architecture_table.py",
+    "original_sha256": "252fd74eb5c177706d0a9ce54d19122fc9cf17a167657ee4ca314b503f7fd193",
+    "released_sha256": "138af0cc44e2406c5c085047635fa6b5040f1419c18163d0ae359f325c443682",
+    "adaptation": "Data-root configuration/import and optional font discovery only; equations unchanged"
+  },
+  {
+    "source": "refine_palette_and_maps.py",
+    "released": "analysis/refine_palette_and_maps.py",
+    "original_sha256": "548bad5f7f26e737c92d65aae25c9e4046df0aab2f5e918a8e45fcc9b3c4d785",
+    "released_sha256": "25e9bfff22da37c6c254644193ad06770a43d2e90517860ab25cf31f581347f6",
+    "adaptation": "Data-root configuration/import and optional font discovery only; equations unchanged"
+  },
+  {
+    "source": "prepare_experiment_report.py",
+    "released": "analysis/prepare_experiment_report.py",
+    "original_sha256": "37f2c7aea5718fc31beec11dae09af13dc9136562b682650c012e93025503b8d",
+    "released_sha256": "878c05cd6b8899a9ef0f006deb90b3f76398f024913d77b53a33a7c3581cc61d",
+    "adaptation": "Data-root configuration/import and optional font discovery only; equations unchanged"
+  },
+  {
+    "source": "verify_experiment_checkpoints.py",
+    "released": "analysis/verify_experiment_checkpoints.py",
+    "original_sha256": "db38312cb80ce65477ae3a88124500664dd6ef64cf80e20a47cb9a3bcd4aa271",
+    "released_sha256": "4a20eccb7567efbefcacfa72341492f752cedbc64db2e5bf76e7d9799576ee92",
+    "adaptation": "Data-root configuration/import and optional font discovery only; equations unchanged"
+  },
+  {
+    "source": "prepare_basemap.py",
+    "released": "analysis/prepare_basemap.py",
+    "original_sha256": "f75b24a5983aba18e1f6eecde3095dafb8a659844a10f7dafd175a9b18f6d2bd",
+    "released_sha256": "9bbbbc00e0c1e062ed1fd1b6d5988696847690168f60056e4b8b2c556e2181e9",
+    "adaptation": "Data-root configuration/import and optional font discovery only; equations unchanged"
+  },
+  {
+    "source": "prepare_texture_basemap.py",
+    "released": "analysis/prepare_texture_basemap.py",
+    "original_sha256": "f00d4bcc00e209348b6992749e97f4c808e27d2d17d2ab10f2a3bb72a8e95226",
+    "released_sha256": "9cffa037deb91cc8358e23307dfa51ce32c6a18d445044f9fc16386daa1d2d0c",
+    "adaptation": "Data-root configuration/import and optional font discovery only; equations unchanged"
+  },
+  {
+    "source": "prepare_administrative_context.py",
+    "released": "analysis/prepare_administrative_context.py",
+    "original_sha256": "58e546e549809d20de2cc764c117f45f6b585271e53e52cd872d9616032a9e34",
+    "released_sha256": "3c98e6bd6f257ece30fad51f8fe29aaec408f42691fb0ee8c49b723d1124b771",
+    "adaptation": "Data-root configuration/import and optional font discovery only; equations unchanged"
+  },
+  {
+    "source": "prepare_user_china_locator.py",
+    "released": "analysis/prepare_user_china_locator.py",
+    "original_sha256": "b70dfbf0f6cad69ad9272184395f7ef5932ccd5ee27993349947887d07c11660",
+    "released_sha256": "a35253fdf5c960652976412448d31c73f36df700cda5436619b3558db27ba618",
+    "adaptation": "Data-root configuration/import and optional font discovery only; equations unchanged"
+  }
+]

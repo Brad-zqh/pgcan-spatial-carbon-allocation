@@ -1,0 +1,40 @@
+{
+  "predictors": [
+    "ntl_sum",
+    "enterprise_poi_density",
+    "industrial_poi_density",
+    "floor_area_proxy",
+    "road_density_km_per_km2",
+    "lowcarbon_patent_count",
+    "landuse_class1_ratio",
+    "landuse_class2_ratio",
+    "landuse_class3_ratio",
+    "grid_id",
+    "center_lon",
+    "center_lat",
+    "industrial_poi_count",
+    "building_density",
+    "innovation_enterprise_count",
+    "enterprise_poi_count",
+    "ntl_mean",
+    "cell_area_km2"
+  ],
+  "model_features": [
+    "ntl_sum",
+    "enterprise_poi_density",
+    "industrial_poi_density",
+    "floor_area_proxy",
+    "road_density_km_per_km2",
+    "lowcarbon_patent_count",
+    "landuse_class1_ratio",
+    "landuse_class2_ratio",
+    "landuse_class3_ratio"
+  ],
+  "units": {
+    "center_lon": "WGS84 longitude degrees",
+    "center_lat": "WGS84 latitude degrees",
+    "cell_area_km2": "square kilometres"
+  },
+  "input_rows": 1980,
+  "omitted": "Input values not redistributed; supplied third-party POI, imagery and administrative data require their own permissions"
+}

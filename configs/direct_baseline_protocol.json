@@ -1,0 +1,15 @@
+{
+  "completed": true,
+  "prediction_head": "Nonnegative direct shares calibrated on training target mass",
+  "additional_input": "Declared prior share; available to both baseline and PGCAN families",
+  "families": [
+    "Ridge",
+    "Random_forest",
+    "Extra_trees",
+    "Hist_gradient",
+    "XGBoost",
+    "MLP",
+    "Local_ridge"
+  ],
+  "elapsed_seconds": 104.07148340001004
+}

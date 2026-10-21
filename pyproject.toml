@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pgcan-spatial-carbon-allocation"
+version = "0.1.0"
+description = "Reproducible prior-guided proxy carbon allocation and spatial graph controls"
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.26,<3", "pandas>=2,<3", "scipy>=1.13,<2", "scikit-learn>=1.5,<2", "torch>=2.2,<3", "pyproj>=3.6,<4"]
+
+[project.optional-dependencies]
+experiments = ["xgboost>=3,<4", "geopandas>=1,<2"]
+figures = ["matplotlib>=3.9,<4", "pillow>=10,<13", "rasterio>=1.4,<2", "geopandas>=1,<2", "pymupdf>=1.24,<2", "lxml>=5,<7"]
+
+[tool.setuptools.packages.find]
+where = ["src"]

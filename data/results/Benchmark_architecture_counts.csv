@@ -1,0 +1,16 @@
+method,trainable_parameters,selected_epochs_full,coordinate,context,function,graph,penalty,anchor,prior_penalty,multi,omit,fixed_gate,rewired
+PGCAN,5339,450,,,,,,,,,,,
+No_coordinate,5339,135,False,,,,,,,,,,
+No_context_branch,5339,90,,False,,,,,,,,,
+No_function_input,5099,210,,,False,,,,,,,,
+No_graph_input,4907,450,,,,False,,,,,,,
+No_graph_penalty,5339,450,,,,,False,,,,,,
+No_graph,4907,435,,,,False,False,,,,,,
+No_prior_anchor,5339,105,,,,,,False,,,,,
+No_prior_penalty,5339,450,,,,,,,False,,,,
+Multi_relation,6638,450,,,,,,,,True,,,
+MR_no_spatial,6206,450,,,,False,False,,,True,0.0,,
+MR_no_function,6638,450,,,,,,,,True,1.0,,
+MR_no_built,6638,375,,,,,,,,True,2.0,,
+MR_fixed_gate,6638,450,,,,,,,,True,,True,
+MR_rewired,6638,450,,,,,,,,True,,,True

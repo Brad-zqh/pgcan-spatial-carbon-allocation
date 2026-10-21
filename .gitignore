@@ -1,0 +1,14 @@
+__pycache__/
+*.py[cod]
+.venv/
+.env
+.env.*
+!.env.example
+data/local/
+outputs/
+analysis/cache/
+analysis/qa/
+analysis/Figures/
+analysis/experiments/
+analysis/source_data/
+*.log

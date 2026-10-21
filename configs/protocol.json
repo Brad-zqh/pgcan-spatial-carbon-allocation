@@ -1,0 +1,107 @@
+{
+  "config": {
+    "seeds": [
+      20260918,
+      20260919,
+      20260920
+    ],
+    "n_folds": 5,
+    "block_m": 10000,
+    "buffer_m": 1000,
+    "graph_k": 8,
+    "relation_radius_m": 10000,
+    "max_epochs": 450,
+    "epoch_interval": 15,
+    "early_patience": 5,
+    "lr": 0.008,
+    "prior_penalty": 0.025,
+    "graph_penalty": 0.015,
+    "coefficient_penalty": 0.0005
+  },
+  "data_sha256": "774b7f3dc55537cc1563a0843ccdbe3639ecc922628158c9a1a1e806881ed1c2",
+  "target": "Predictor-derived t=0.70 prior + 0.30 activity; not observed emissions.",
+  "spatial_scope": "Single fixed-domain snapshot; no temporal forecasting or intercity transfer claim.",
+  "leakage": "Train-only scalers; query messages only from training nodes. Site membership excluded from fitting/selection. Prior/target are globally normalized deterministic recipes on the known domain; this is proxy reconstruction, not independent outcome validation.",
+  "uncertainty": "Five fixed buffered geographic folds x three training seeds; fold and seed spread are descriptive, not independent replicates.",
+  "normalization": "Absolute proxy shares calibrated on training mass only; RMSE/MAE/R2 use unrenormalized held-out predictions. OOF maps normalized only for allocation/site screening.",
+  "comparison": "Fixed declared hyperparameters; neural epochs chosen on spatial inner validation then refit on all outer training nodes. Analytical direct mixture is an exact target reference, not a learned competitor.",
+  "relations": [
+    "distance 8NN",
+    "functional similarity within 10 km",
+    "built/activity similarity within 10 km"
+  ],
+  "versions": {
+    "python": "3.10.18",
+    "torch": "2.12.1+cu130",
+    "numpy": "2.0.1",
+    "sklearn": "1.7.1",
+    "scipy": "1.15.3",
+    "xgboost": "3.2.0"
+  },
+  "variants": {
+    "PGCAN": {},
+    "No_coordinate": {
+      "coordinate": false
+    },
+    "No_context_branch": {
+      "context": false
+    },
+    "No_function_input": {
+      "function": false
+    },
+    "No_graph_input": {
+      "graph": false
+    },
+    "No_graph_penalty": {
+      "penalty": false
+    },
+    "No_graph": {
+      "graph": false,
+      "penalty": false
+    },
+    "No_prior_anchor": {
+      "anchor": false
+    },
+    "No_prior_penalty": {
+      "prior_penalty": false
+    },
+    "Multi_relation": {
+      "multi": true
+    },
+    "MR_no_spatial": {
+      "multi": true,
+      "omit": 0,
+      "graph": false,
+      "penalty": false
+    },
+    "MR_no_function": {
+      "multi": true,
+      "omit": 1
+    },
+    "MR_no_built": {
+      "multi": true,
+      "omit": 2
+    },
+    "MR_fixed_gate": {
+      "multi": true,
+      "fixed_gate": true
+    },
+    "MR_rewired": {
+      "multi": true,
+      "rewired": true
+    }
+  },
+  "classic_models": [
+    "Ridge",
+    "Random_forest",
+    "Extra_trees",
+    "Hist_gradient",
+    "XGBoost",
+    "MLP",
+    "Local_ridge"
+  ],
+  "elapsed_seconds": 1185.1578623999958,
+  "completed": true,
+  "model_count": 24,
+  "fold_fit_count": 320
+}

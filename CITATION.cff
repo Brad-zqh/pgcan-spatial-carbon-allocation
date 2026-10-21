@@ -1,0 +1,10 @@
+cff-version: 1.2.0
+message: "Cite this software and the verified GNNWR references where relevant; manuscript is a work in progress."
+type: software
+title: "PGCAN: prior-guided spatial carbon allocation"
+authors:
+  - name: Brad-zqh
+repository-code: "https://github.com/Brad-zqh/pgcan-spatial-carbon-allocation"
+license: MIT
+version: 0.1.0
+date-released: 2026-10-22

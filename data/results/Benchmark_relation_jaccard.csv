@@ -1,0 +1,4 @@
+,distance 8NN,functional similarity within 10 km,built/activity similarity within 10 km
+distance 8NN,1.0,0.02472159629012769,0.034549071618037136
+functional similarity within 10 km,0.02472159629012769,1.0,0.02753391859537111
+built/activity similarity within 10 km,0.034549071618037136,0.02753391859537111,1.0
