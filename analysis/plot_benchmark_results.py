@@ -142,9 +142,13 @@ def benchmark_plate():
  a=axs[10];category_order=['industrial','transport_built','research','mixed','low_activity']
  val=np.array([[np.mean(abs(mean(k)[cats==c]-target[cats==c]))*100 for c in category_order] for k in names])
  norm=Normalize(0,float(val.max()));image=a.imshow(val,cmap=v.HEAT,norm=norm,aspect='auto')
- # Dense five-column values belong in the source table. At the requested
- # larger type size they cannot fit these cells without colliding.
+ # Compact in-cell labels retain three decimals; source values stay unrounded.
  pd.DataFrame(val,index=names,columns=category_order).to_csv(S/'Benchmark_category_mae_pp.csv',index_label='method')
+ for row in range(val.shape[0]):
+  for col in range(val.shape[1]):
+   text=a.text(col,row,error_label(val[row,col]),ha='center',va='center',fontsize=6.4,color='black')
+   text.set_gid('compact_diagnostic_label')
+ a._annotated_category_mae={'shape':list(val.shape),'values':val.tolist(),'labels':[[error_label(z) for z in row] for row in val]}
  cb=f.colorbar(image,cax=a.inset_axes([1.035,0,.035,1]),ticks=[0,.025,.05])
  cb.outline.set_visible(False);cb.ax.tick_params(labelsize=6.8,length=2,pad=1)
  cb.set_label('MAE (pp)',fontsize=6.8,labelpad=2)
@@ -168,7 +172,7 @@ def benchmark_plate():
  f._density_encoding={'type':'KDE percentile','panels':['g','h','i'],'bandwidth':'Scott',
   'point_positions':'Actual individual-seed OOF predictions, asinh(share_pct/0.001); no jitter'}
  v.save(f,'Figure_10',['Benchmark_fold_metrics.csv','Benchmark_direct_fold_metrics.csv','Benchmark_cell_manifest.csv','Benchmark_input_audit.csv','Benchmark_covariate_correlogram.csv','Benchmark_support_strata.csv','Benchmark_category_mae_pp.csv'],
-  'Fifteen-panel spatial benchmark. Direct-share baselines receive the declared prior and the same train-only neighbourhood covariates. Proxy RMSE/MAE/R2 use unrenormalized held-out predictions calibrated on training mass; OOF screening uses separately normalized maps. Panels g–i show all real seed-specific OOF predictions (one deterministic run for ridge), including zero targets, on asinh(percentage/0.001) axes labelled in raw percentages; colours are within-panel Scott-KDE density percentiles. Their R² values remain those of the seed-mean ensemble. Error and timing ranges are actual fold/seed ranges. Spatial support is defined by held-out query-to-training distance tertiles. Category MAE uses one common linear colour scale; the exact nine-by-five values are supplied in Benchmark_category_mae_pp.csv instead of overlapping in-cell numbers. No measured emissions are available.')
+  'Fifteen-panel spatial benchmark. Direct-share baselines receive the declared prior and the same train-only neighbourhood covariates. Proxy RMSE/MAE/R2 use unrenormalized held-out predictions calibrated on training mass; OOF screening uses separately normalized maps. Panels g–i show all real seed-specific OOF predictions (one deterministic run for ridge), including zero targets, on asinh(percentage/0.001) axes labelled in raw percentages; colours are within-panel Scott-KDE density percentiles. Their R² values remain those of the seed-mean ensemble. Error and timing ranges are actual fold/seed ranges. Spatial support is defined by held-out query-to-training distance tertiles. Panel k shows category MAE on one common linear colour scale with a right-side vertical colourbar and three-decimal in-cell values; positive values below 0.001 pp are labelled <0.001. Full precision is supplied in Benchmark_category_mae_pp.csv. No measured emissions are available.')
 
 def paired_difference(keys,field,baseline='PGCAN',scope='fold'):
  table=fold if scope=='fold' else maps[maps.scope.eq('full_domain_refit')]
