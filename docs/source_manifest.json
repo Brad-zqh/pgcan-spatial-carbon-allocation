@@ -51,8 +51,8 @@
   {
     "source": "plot_prediction_matrix.py",
     "released": "analysis/plot_prediction_matrix.py",
-    "original_sha256": "d508b2b5e8bcb66c93a22d9016392a369d492b972eaed8e95b953973f81c5887",
-    "released_sha256": "54531048b363f0e8876a499e872c8cbb3a822c0f66e48de6faf4c56b5de7e532",
+    "original_sha256": "010641e1150977ee227f1bbc02e77883b09fb1e7e16a7ceb1143051ae9bfb839",
+    "released_sha256": "e4998b37c31f4f128e4aff68c30186ea48004c645d5d49acd33bb091de07b08e",
     "adaptation": "Data-root configuration/import and optional font discovery only; equations unchanged"
   },
   {

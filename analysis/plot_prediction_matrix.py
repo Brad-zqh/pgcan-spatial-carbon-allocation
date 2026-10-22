@@ -5,7 +5,11 @@ Explicit user requirements select black Times New Roman and pink/green. All
 """
 import os
 from pathlib import Path
-import json,string
+import json,string,os
+_cache=Path(__file__).resolve().parent/'cache'
+_cache.mkdir(parents=True,exist_ok=True)
+os.environ['MPLCONFIGDIR']=str(_cache)
+os.environ['TEMP']=os.environ['TMP']=str(_cache)
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
