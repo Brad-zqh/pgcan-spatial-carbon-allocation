@@ -18,6 +18,7 @@ from matplotlib.ticker import FixedLocator,FixedFormatter
 from scipy.stats import gaussian_kde,rankdata
 from sklearn.metrics import r2_score,mean_squared_error,mean_absolute_error
 import redraw_figures as v
+from precision_labels import error_label,r2_label,metric_annotation
 
 P=v.HERE;E=P/'experiments';S=v.SD
 METHODS=[('PGCAN','PGCAN refit'),('Multi_relation','Multi-relation'),('Ridge_direct','Ridge'),
@@ -74,8 +75,7 @@ def draw():
         mae=float(mean_absolute_error(target,prediction));r2=float(r2_score(target,prediction))
         actual=[r2,rmse,mae]
         np.testing.assert_allclose(actual,old_metrics.loc[key,['pooled_oof_r2','pooled_oof_rmse_pp','pooled_oof_mae_pp']].to_numpy(float),rtol=1e-12,atol=1e-14)
-        r2_display=f'{r2:.6f}'.rstrip('0').rstrip('.') if r2>.9999 else f'{r2:.4f}'
-        ax.text(.025,.975,f'R²(mean) = {r2_display}\nRMSE = {rmse:.3g} pp\nMAE = {mae:.3g} pp',
+        ax.text(.025,.975,f'R²(mean) = {r2_label(r2)}\n{metric_annotation("RMSE",rmse)}\n{metric_annotation("MAE",mae)}',
             transform=ax.transAxes,fontsize=8.2,va='top',ha='left',linespacing=1.12)
         cax=axes(left+44,bottom+3,1.25,36)
         cb=fig.colorbar(artist,cax=cax,orientation='vertical',ticks=[])
@@ -128,7 +128,7 @@ def draw():
         'Every scatter includes all 1,980 actual cells, including six zero targets, once for each saved training seed: three real OOF predictions per cell for stochastic methods and one for deterministic methods. No points are sampled, jittered or moved. Multiple seed marks are repeated predictions of the same cells, not independent spatial observations. '
         'Scatter positions use identical axes with asinh(share in percent/0.001); tick labels show original percentage shares. The smaller linear core expands the low-value region. Larger translucent marks reveal the real seed-specific cloud; the dashed diagonal denotes equality. '
         'Colour is the within-panel percentile of a bivariate Gaussian kernel-density estimate in display coordinates, with Scott bandwidth: green sparse exterior to pink dense core. Each panel has a vertical 0–100 density-percentile colourbar. These are density ranks, not cell counts, signed errors or comparable absolute density magnitudes. '
-        'The upper-left corner of each scatter reports the unchanged seed-mean ensemble R², RMSE and MAE from untransformed percentage shares; errors are percentage points (pp). The mean is used for metrics, while individual real seed predictions are plotted. Values above 0.9999 use six decimal places to distinguish near-exact from perfect reconstruction. Each model has exactly one scatter panel; no duplicate residual plot is included. '
+        'The upper-left corner reports the unchanged seed-mean ensemble R², RMSE and MAE from untransformed percentage shares. Labels use three decimal places; positive errors below 0.001 are written <0.001, and an R² rounded to 1.000 need not represent exact reconstruction. Errors are percentage points (pp): a change from 1% to 2% is 1 pp. Raw values remain in Source Data. Individual real seed predictions are plotted. Each model has one scatter panel. '
         'Five spatial folds use 10 km blocks and a 1 km centroid buffer. Held-out shares retain training-mass calibration and are not renormalized against test targets. '
         'Targets are deterministic constructed proxies rather than measured emissions. All metrics and unfavourable comparisons are retained unchanged; these panels quantify proxy reconstruction only.')
     v.save(fig,'Figure_13',['Benchmark_cell_manifest.csv','Benchmark_prediction_density_metrics.csv',

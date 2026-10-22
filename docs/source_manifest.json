@@ -23,36 +23,36 @@
   {
     "source": "enhanced_analysis.py",
     "released": "analysis/enhanced_analysis.py",
-    "original_sha256": "9a8b06949e7a8f1b1c353f2bb61084ece3de3b813518db16ed023361f830c25d",
-    "released_sha256": "d768b725cfdc9aa7702466cce25ee8f91a43c3f924f1a54f3d04d6df2e9ec98a",
+    "original_sha256": "8456d6fbd98f9f9292504597e9090407d79417562d59470472b43b8cf7815554",
+    "released_sha256": "10ac37f9b483e6b98c52092759e346d819079245886d812a7cdce3c242358010",
     "adaptation": "Data-root configuration/import and optional font discovery only; equations unchanged"
   },
   {
     "source": "redraw_figures.py",
     "released": "analysis/redraw_figures.py",
-    "original_sha256": "b324e649fd50318ae7c300a2efeac3574b938f9e788275e72d1f4b582da6d786",
-    "released_sha256": "2658e2193419f079f34811732be9312aaa3acb26a5dd75c3a2832b5edd43f0fc",
+    "original_sha256": "ce390fe362ecc87e7db14eaadf1b82f001789a82eefe3045d73d678cf59fc011",
+    "released_sha256": "83d3d5978e05da180fc14ecff7b6da6d1bf3575a456dae53742f8c5848e0f4bc",
     "adaptation": "Data-root configuration/import and optional font discovery only; equations unchanged"
   },
   {
     "source": "plot_deep_analysis.py",
     "released": "analysis/plot_deep_analysis.py",
-    "original_sha256": "a079f5d216ae95e19a2552daaca6b4672f076dce5217b50fbe64a686c01dcd2c",
-    "released_sha256": "84c074e122a30619d563727ac0bca3a43c128ddbeb66410a27edbd31aea76a34",
+    "original_sha256": "006e842606c5e132d8f1cf5a4cfcbdb1b1b5f351f67f838e76214f7da0c38f2f",
+    "released_sha256": "4d26df942668ad05a4487b968041e75bcd4349616b2dd85cce04cda00bb08f97",
     "adaptation": "Data-root configuration/import and optional font discovery only; equations unchanged"
   },
   {
     "source": "plot_benchmark_results.py",
     "released": "analysis/plot_benchmark_results.py",
-    "original_sha256": "3b52589f8cbfce7eb3026d3c8dbc4b48f951f328b7eb44155ec2b31eda12fa65",
-    "released_sha256": "0a9082cf98f0f402e0cac645eea9af43a9f8e6bf980d41930119633a72364acb",
+    "original_sha256": "4df017413491c7a474c5bc2d0d1f1afc8a7263d16bbea613babb9a16678d2264",
+    "released_sha256": "e3c8365ba768e92fe59ef29fbeee39253d96cb9477154b6760944db5744a2a07",
     "adaptation": "Data-root configuration/import and optional font discovery only; equations unchanged"
   },
   {
     "source": "plot_prediction_matrix.py",
     "released": "analysis/plot_prediction_matrix.py",
-    "original_sha256": "76bf126fe765e57a1c1ea5b1b2f2079f6f68df11c88f314f2488c9458fed521f",
-    "released_sha256": "9dc0ea1fe485a791239c8359bb5100ae13c9a8284cf48c2ad34bfd47dedec216",
+    "original_sha256": "efbb130f7b231e06b77328433ca63c7a1aa40b8addb17288a71e50b347ef7121",
+    "released_sha256": "1fd5193c7ffcc7b833783251aed31c6a9600f550365f33441f14fd770f7a315a",
     "adaptation": "Data-root configuration/import and optional font discovery only; equations unchanged"
   },
   {
@@ -65,8 +65,8 @@
   {
     "source": "plot_allocation_atlas.py",
     "released": "analysis/plot_allocation_atlas.py",
-    "original_sha256": "e0a2def8e3127862bdfe1b58090c48c6c9afacaa3eaba95cb6536d5273be95e5",
-    "released_sha256": "49b74b08d4599c1c81a5cb820e572478d36cc7c496d7c785cf0ae3e977e5c203",
+    "original_sha256": "db132bf2ed5046dffba9f34806db21d321694d5b6ae3689bb1204f35a7c4e334",
+    "released_sha256": "5e6a72f49f6eda1f7779228db50e2a654e2fdd1138c06f2eda4ae73e864aa6c8",
     "adaptation": "Data-root configuration/import and optional font discovery only; equations unchanged"
   },
   {
@@ -107,8 +107,15 @@
   {
     "source": "refined_primitives.py",
     "released": "analysis/refined_primitives.py",
-    "original_sha256": "666b2e3ad418fbb0573e7b4c1ffb35ef50b430d9382778e27df94c539c30d390",
-    "released_sha256": "e3fc9d362ccdc36bb95c846fad8c07366a2e844556313705e9be0b086001e652",
+    "original_sha256": "48b07977564d871fd8711699a78560def6033b5406f709af08e459084d1b3954",
+    "released_sha256": "b01a55b603d7802e3b65008388beb6533b077b60481735ac1eb11fb512813eb6",
+    "adaptation": "Data-root configuration/import and optional font discovery only; equations unchanged"
+  },
+  {
+    "source": "precision_labels.py",
+    "released": "analysis/precision_labels.py",
+    "original_sha256": "89ade920a62a2721c978b9fb9d6d7d1fc4df605e649f7c1d005367ddcd5432b3",
+    "released_sha256": "ab26b8d2d7702cab3f9782b549017c8014df2c7296f71719db4c4ab7c5d81098",
     "adaptation": "Data-root configuration/import and optional font discovery only; equations unchanged"
   },
   {
@@ -149,8 +156,8 @@
   {
     "source": "verify_prediction_atlas.py",
     "released": "analysis/verify_prediction_atlas.py",
-    "original_sha256": "3bbc0e11fb56a004605309e2dea7ffa3412dbc19aebb8e3c3287601fcec48ee3",
-    "released_sha256": "dbba56ecc40a4b60d49fe97f7ae2aea74e08d9316a03cd360a68c00c20f2cf74",
+    "original_sha256": "6ddeb3603381739623ea2ffbb34f8445250f74b60c168b72013c1c29ed44e5ec",
+    "released_sha256": "35018ef5a7526d553f686e28d5c242adacc7f25813805754b0efd3cff0d215ba",
     "adaptation": "Data-root configuration/import and optional font discovery only; equations unchanged"
   },
   {

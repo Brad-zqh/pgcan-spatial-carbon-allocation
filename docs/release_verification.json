@@ -1,6 +1,6 @@
 {
   "status": "PASS",
-  "public_files": 97,
+  "public_files": 98,
   "raw_or_licensed_assets_copied": false,
   "credential_matches": 0,
   "anonymous_cells": 1980,
@@ -34,8 +34,8 @@
     },
     {
       "path": "analysis/enhanced_analysis.py",
-      "bytes": 30448,
-      "sha256": "d768b725cfdc9aa7702466cce25ee8f91a43c3f924f1a54f3d04d6df2e9ec98a"
+      "bytes": 31030,
+      "sha256": "10ac37f9b483e6b98c52092759e346d819079245886d812a7cdce3c242358010"
     },
     {
       "path": "analysis/figure_finish.py",
@@ -74,18 +74,18 @@
     },
     {
       "path": "analysis/plot_allocation_atlas.py",
-      "bytes": 11457,
-      "sha256": "49b74b08d4599c1c81a5cb820e572478d36cc7c496d7c785cf0ae3e977e5c203"
+      "bytes": 11546,
+      "sha256": "5e6a72f49f6eda1f7779228db50e2a654e2fdd1138c06f2eda4ae73e864aa6c8"
     },
     {
       "path": "analysis/plot_benchmark_results.py",
-      "bytes": 32085,
-      "sha256": "0a9082cf98f0f402e0cac645eea9af43a9f8e6bf980d41930119633a72364acb"
+      "bytes": 32820,
+      "sha256": "e3c8365ba768e92fe59ef29fbeee39253d96cb9477154b6760944db5744a2a07"
     },
     {
       "path": "analysis/plot_deep_analysis.py",
-      "bytes": 19028,
-      "sha256": "84c074e122a30619d563727ac0bca3a43c128ddbeb66410a27edbd31aea76a34"
+      "bytes": 19943,
+      "sha256": "4d26df942668ad05a4487b968041e75bcd4349616b2dd85cce04cda00bb08f97"
     },
     {
       "path": "analysis/plot_error_diagnostics.py",
@@ -94,8 +94,13 @@
     },
     {
       "path": "analysis/plot_prediction_matrix.py",
-      "bytes": 12322,
-      "sha256": "9dc0ea1fe485a791239c8359bb5100ae13c9a8284cf48c2ad34bfd47dedec216"
+      "bytes": 12350,
+      "sha256": "1fd5193c7ffcc7b833783251aed31c6a9600f550365f33441f14fd770f7a315a"
+    },
+    {
+      "path": "analysis/precision_labels.py",
+      "bytes": 356,
+      "sha256": "ab26b8d2d7702cab3f9782b549017c8014df2c7296f71719db4c4ab7c5d81098"
     },
     {
       "path": "analysis/prepare_administrative_context.py",
@@ -124,8 +129,8 @@
     },
     {
       "path": "analysis/redraw_figures.py",
-      "bytes": 49612,
-      "sha256": "2658e2193419f079f34811732be9312aaa3acb26a5dd75c3a2832b5edd43f0fc"
+      "bytes": 51522,
+      "sha256": "83d3d5978e05da180fc14ecff7b6da6d1bf3575a456dae53742f8c5848e0f4bc"
     },
     {
       "path": "analysis/refine_palette_and_maps.py",
@@ -134,8 +139,8 @@
     },
     {
       "path": "analysis/refined_primitives.py",
-      "bytes": 3428,
-      "sha256": "e3fc9d362ccdc36bb95c846fad8c07366a2e844556313705e9be0b086001e652"
+      "bytes": 4997,
+      "sha256": "b01a55b603d7802e3b65008388beb6533b077b60481735ac1eb11fb512813eb6"
     },
     {
       "path": "analysis/run_direct_baselines.py",
@@ -159,8 +164,8 @@
     },
     {
       "path": "analysis/verify_prediction_atlas.py",
-      "bytes": 5585,
-      "sha256": "dbba56ecc40a4b60d49fe97f7ae2aea74e08d9316a03cd360a68c00c20f2cf74"
+      "bytes": 6194,
+      "sha256": "35018ef5a7526d553f686e28d5c242adacc7f25813805754b0efd3cff0d215ba"
     },
     {
       "path": "analysis/visual_polish.py",
@@ -419,8 +424,8 @@
     },
     {
       "path": "docs/assets/Figure_13.png",
-      "bytes": 550765,
-      "sha256": "44ac48bb90fbec28a44458c14583e8796fd0f07993d8e6cbff58514253216f88"
+      "bytes": 541729,
+      "sha256": "60463973264200c77829f05546164b6c3cb08cb4a7163fb9f9a906be43e5e62d"
     },
     {
       "path": "docs/assets/Table_4.png",
@@ -439,8 +444,8 @@
     },
     {
       "path": "docs/source_manifest.json",
-      "bytes": 10301,
-      "sha256": "4b374759938c1c4f8386c7332486e65fc1107ac7f9a2b6ccafc1b19385a0e350"
+      "bytes": 10689,
+      "sha256": "a9555a8441c8002a713241faadb3f0a8093d004140828b1ec77efd3373eab409"
     },
     {
       "path": "docs/SUPPLEMENTAL_REFERENCE_CHECK.md",
@@ -459,8 +464,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 6333,
-      "sha256": "b5c531cc41816871f303898370afaf8808c4f1da13ac4e122b88bc9310ab4855"
+      "bytes": 6553,
+      "sha256": "d03152f6425b0b470faef48e1d5bce2dfeaa40954b9c6eff819c9b859ac3d08f"
     },
     {
       "path": "scripts/import_local_workspace.py",

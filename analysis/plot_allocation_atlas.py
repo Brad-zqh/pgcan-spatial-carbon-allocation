@@ -135,7 +135,7 @@ def draw():
         'Panels f–h use the exact same geographic window and the scales of their corresponding overview maps. '
         'The joint density uses 1,959 positive-prior cells; Spearman correlation uses all 1,980 cells. '
         'ECDFs and concentration curves retain every cell, including zero shares. Category violins show empirical distributions, with black median dots and interquartile intervals. '
-        'Rank migration uses deterministic grid-ID tie breaking and within-prior-decile percentages; the neutral first class represents zero (positive cells are at least 0.505%). The two set ribbons report shared and method-only Top-198 selections. '
+        'Rank migration uses deterministic grid-ID tie breaking and within-prior-decile percentages; the neutral first class represents zero (positive cells are at least 0.505%). The area-proportional set diagram reports 184 shared and 14 method-only Top-198 selections per method, with outside callouts for the narrow exclusive regions. '
         'Seed frequency counts all 1,980 cells across five original training seeds and uses a logarithmic count axis. '
         'Signed violin gradients encode negative/pink and positive/green changes, with median/IQR marks. The map legend gives seed standard deviation with ddof=1; no confidence intervals or measured emissions accuracies are implied.')
 

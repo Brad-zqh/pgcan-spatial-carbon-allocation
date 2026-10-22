@@ -1,7 +1,9 @@
 """Independently reproduce displayed metrics and density ranks; audit layout."""
 import os
 from pathlib import Path
-import json,hashlib
+import json,hashlib,re
+from collections import Counter
+from precision_labels import error_label,r2_label
 import numpy as np
 import pandas as pd
 from scipy.stats import gaussian_kde,rankdata
@@ -46,8 +48,12 @@ def main():
             'n_ecdf_values':1980,'metrics_density_and_ecdf_reproduced':True})
     pdf=fitz.open(P/'Figures/Figure_13.pdf');page=pdf[0]
     text=page.get_text()
-    assert text.count('RMSE =')==15 and text.count('MAE =')==15
+    assert text.count('RMSE ')==15 and text.count('MAE ')==15
     assert text.count('Density percentile (%)')==15
+    assert Counter(re.findall(r'R²\(mean\)\s*=\s*(\d+\.\d{3})',text))==Counter(r2_label(x) for x in metrics.pooled_oof_r2)
+    for label,column in [('RMSE','pooled_oof_rmse_pp'),('MAE','pooled_oof_mae_pp')]:
+        found=re.findall(label+r'\s*([=<])\s*(\d+\.\d{3})\s*pp',text)
+        assert Counter(found)==Counter(('<','0.001') if 0<x<.001 else ('=',f'{x:.3f}') for x in metrics[column])
     assert 'Residual (pp)' not in text and 'Error ECDF' not in text
     manifest=json.loads((P/'figure_manifest.json').read_text(encoding='utf-8'))
     layout=next(item for item in manifest if item['figure']=='Figure_13')['layout']
@@ -62,6 +68,7 @@ def main():
         'all_unfavourable_results_retained':True,'original_prediction_arrays_unchanged':True,
         'layout':layout,'exactly_one_scatter_per_model':True,'metrics_in_upper_left':True,
         'density_colour_semantics':'Within-panel KDE density percentile; not absolute counts or emissions uncertainty'}
+    report['metric_display']='Three decimals; positive errors below 0.001 displayed <0.001; unrounded source metrics retained'
     (P/'qa/prediction_atlas_verification.json').write_text(json.dumps(report,indent=2),encoding='utf-8')
     assert report['general_text_minimum_at_print_pt']>=7 and report['compact_diagnostic_text_at_print_pt']>=5
     review_path=P/'qa/prediction_matrix_design_review.json'

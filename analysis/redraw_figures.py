@@ -32,6 +32,7 @@ import cartography_style as carto
 import map_classification as mc
 from visual_polish import complete_heatmap_legends
 from figure_finish import compact_rows,compact_columns,align_matrix_bars
+from refined_primitives import value_bar,emphasis_line
 
 ROOT = Path(os.environ.get('PGCAN_PROJECT_ROOT',HERE.parent/'data/local/project'))
 WORK = ROOT / 'submission_revision_20260922'
@@ -216,6 +217,19 @@ def save(fig,name,source,caption):
     compactness=compact_rows(fig,name)
     horizontal_compactness=compact_columns(fig,name)
     matrix_bar_alignment=align_matrix_bars(fig)
+    if name in ['Figure_10','Figure_12'] and fig.legends:
+        fig.canvas.draw();renderer=fig.canvas.get_renderer()
+        top=max(a.get_tightbbox(renderer).y1 for a in fig.axes if a.get_visible())
+        for legend in fig.legends:
+            legend.set_loc('lower center');legend.borderaxespad=0
+            legend.set_bbox_to_anchor((.5,(top+3/25.4*fig.dpi)/fig.bbox.height),transform=fig.transFigure)
+    panel_alignment=[]
+    for direction,groups in [('column',getattr(fig,'_aligned_axes_columns',[])),('row',getattr(fig,'_aligned_axes_rows',[]))]:
+        for group in groups:
+            positions=[a.get_position() for a in group]
+            values=[[p.x0,p.width] if direction=='column' else [p.y0,p.height] for p in positions]
+            np.testing.assert_allclose(values,np.tile(values[0],(len(values),1)),atol=1e-7)
+            panel_alignment.append({'direction':direction,'matched_axes':len(group),'positions':values})
     inset_axes=[a for a in fig.findobj(mpl.axes.Axes) if a not in fig.axes and a.get_visible()]
     for a in inset_axes:a.set_in_layout(True)
     export_extra=[*inset_axes,*[t for t in fig.findobj(mpl.text.Text) if t.get_visible() and t.get_text()],
@@ -223,6 +237,18 @@ def save(fig,name,source,caption):
     fig.canvas.draw()
     north_checks=[];coordinate_checks=[];coordinate_neighbour_checks=[]
     renderer=fig.canvas.get_renderer()
+    legend_clearance=[]
+    if name in ['Figure_4','Figure_7','Figure_8','Figure_9','Figure_10','Figure_12']:
+        for legend in fig.findobj(mpl.legend.Legend):
+            if not legend.get_visible():continue
+            lb=legend.get_window_extent(renderer)
+            overlaps=[]
+            for axis in all_axes:
+                if not axis.get_visible() or not axis.axison:continue
+                overlap=mpl.transforms.Bbox.intersection(lb,axis.get_window_extent(renderer))
+                if overlap is not None and overlap.width>1 and overlap.height>1:overlaps.append([overlap.width,overlap.height])
+            assert not overlaps,(name,'Legend overlaps a data frame',overlaps)
+            legend_clearance.append({'outside_all_plot_frames':True,'labels':[t.get_text() for t in legend.get_texts()]})
     for source_axis,neighbour_title in getattr(fig,'_layout_clearance_pairs',[]):
         if not neighbour_title.get_text():continue
         title_bounds=neighbour_title.get_window_extent(renderer)
@@ -297,6 +323,9 @@ def save(fig,name,source,caption):
     manifest[-1]['compactness']=compactness
     manifest[-1]['horizontal_compactness']=horizontal_compactness
     manifest[-1]['matrix_bar_alignment']=matrix_bar_alignment
+    manifest[-1]['set_overlap_checks']=[a._set_overlap_geometry for a in all_axes if hasattr(a,'_set_overlap_geometry')]
+    manifest[-1]['panel_alignment']=panel_alignment
+    manifest[-1]['legend_clearance']=legend_clearance
     plt.close(fig)
     print('Saved',name,flush=True)
 
@@ -622,11 +651,9 @@ def fig6():
         r=ns.loc[k];col=[INK,LILAC,CORAL,TEAL][i]
         values=seed_runs.loc[seed_runs.configuration.eq(k),'primary_coverage'].to_numpy()*100
         np.testing.assert_allclose([values.mean(),values.std(ddof=1)],[r.coverage*100,r.sd*100],atol=1e-10)
-        b.scatter(values,np.full(len(values),i)+np.linspace(-.13,.13,len(values)),
-                  s=13,facecolors='white',edgecolors=col,lw=.65,zorder=3)
-        b.errorbar(r.coverage*100,i,xerr=r.sd*100,fmt='D',c=col,mec='white',mew=.5,ms=4.6,capsize=3,lw=1.1,zorder=4)
-        b.text(1.04,i,f'{r.coverage*100:.2f}',transform=b.get_yaxis_transform(),fontsize=6.8,va='center')
-    b.set_yticks(range(4),[v[1] for v in rows],fontsize=7);b.invert_yaxis();b.set_xlim(0,60)
+        value_bar(b,r.coverage*100,i,col,height=.48,sd=r.sd*100)
+        b.text(1.04,i,f'{r.coverage*100:.3f}',transform=b.get_yaxis_transform(),fontsize=6.8,va='center')
+    b.set_yticks(range(4),[v[1] for v in rows],fontsize=7);b.set(ylim=(3.6,-.6),xlim=(0,60))
     b.set_xticks([0,20,40,60]);b.set_xlabel('Coverage (%)');b.tick_params(axis='y',length=0);b.spines['left'].set_visible(False);quiet(b,'x')
     panel(b,'b','Regularization / information paths',title_x=-1)
     z=c.scatter(sc.top10_mass_share*100,sc.primary_coverage*100,c=sc.tv_target,cmap=SEQ,
@@ -640,7 +667,8 @@ def fig6():
     for field,color,off,mark,lab in [('coverage_change_vs_prior_pp',INK,-.12,'o','Versus own prior'),
                                    ('coverage_change_vs_target_pp',LILAC,.12,'s','Versus own target')]:
         xx=rr.scenario+off;vv=rr[field]
-        d.vlines(xx,0,vv,colors=color,lw=.8,alpha=.65)
+        stems=d.vlines(xx,0,vv,colors=color,lw=.8,alpha=.85)
+        emphasis_line(stems,color,width=3.2)
         d.scatter(xx,vv,s=20,marker=mark,c=color,edgecolors='white',lw=.4,label=lab,zorder=3)
     d.axhline(0,c='#8E9DA4',lw=.7);quiet(d);d.set_xticks([0,3,6,9,11])
     d.set(xlabel='Scenario identifier',ylabel='Coverage difference (pp)',xlim=(-.6,11.6))
@@ -648,7 +676,7 @@ def fig6():
     panel(d,'d','Paired neural-minus-baseline coverage')
     foot(f,'Training lines: five-seed mean; ribbons / bars: sample seed SD | Scenario ranges describe design sensitivity')
     save(f,'Figure_6',['new_training_history.json','new_summary.csv','prior_scenarios_256.csv','Data_S10_paired_scenarios.csv'],
-         'Constructed-target approximation, regularization changes and paired heuristic scenarios. Shaded training ribbons and capped coverage intervals show sample seed SD. Open circles in b are the actual five seed results, separated only along the categorical direction; diamonds show their means. No decorative background or shadow bands are used.')
+         'Constructed-target approximation, regularization changes and paired heuristic scenarios. Shaded training ribbons and capped coverage intervals show sample seed SD. Bounded bars in b show five-seed mean coverage; their internal tint is visual emphasis. Thin translucent under-strokes in d follow the exact stems and do not represent uncertainty.')
 
 def figs1():
     f,axs=plt.subplots(2,2,figsize=(WIDTH,5.15));f.subplots_adjust(left=.06,right=.975,top=.94,bottom=.14,hspace=.55,wspace=.13)

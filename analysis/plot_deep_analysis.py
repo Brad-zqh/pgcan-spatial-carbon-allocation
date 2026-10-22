@@ -17,7 +17,7 @@ from matplotlib.patches import Patch, FancyBboxPatch
 from PIL import Image, ImageDraw, ImageFont
 import redraw_figures as v
 from visual_polish import density_norm,tag_small_text
-from refined_primitives import signed_violin,overlap_ribbons,density_scatter
+from refined_primitives import signed_violin,overlap_ribbons,density_scatter,emphasis_line
 
 P=v.HERE; SD=v.SD; D=v.grid
 CS=pd.read_csv(SD/'Deep_channel_summary.csv')
@@ -50,7 +50,8 @@ def response(a,metric,color,label):
     g=RR.groupby('residual_multiplier')[metric]
     x=g.mean().index.to_numpy();mean=g.mean().to_numpy()
     a.fill_between(x,g.min(),g.max(),color=color,alpha=.15,lw=0)
-    a.plot(x,mean,color=color,lw=1.5,label=label)
+    line,=a.plot(x,mean,color=color,lw=1.5,label=label)
+    emphasis_line(line,color,width=3.8)
     a.plot(x[::5],mean[::5],ls='',marker='o',ms=2.5,color=color,mec='white',mew=.35)
 
 def figure7():
@@ -73,7 +74,8 @@ def figure7():
         mean=CC.groupby('category')[key].mean().reindex(CAT)
         lo=CC.groupby('category')[key].min().reindex(CAT)
         hi=CC.groupby('category')[key].max().reindex(CAT)
-        a.hlines(yy+offset,lo,hi,color=c,lw=1.4,alpha=.65)
+        intervals=a.hlines(yy+offset,lo,hi,color=c,lw=1.25,alpha=.85)
+        emphasis_line(intervals,c,width=3.4)
         a.scatter(mean,yy+offset,c=c,s=17,zorder=3,label=label,edgecolors='white',lw=.4)
     a.axvline(0,c='#8E989E',lw=.65,ls='--')
     a.set_yticks(yy,[v.CAT[k][1] for k in CAT],fontsize=7);a.invert_yaxis()
@@ -100,17 +102,17 @@ def figure7():
     xx=RR.groupby('residual_multiplier').tv_target.mean().index.to_numpy()
     a.axvline(1,c='#79858C',ls='--',lw=.7);a.text(1.025,.98,'Fitted',transform=a.get_xaxis_transform(),va='top',fontsize=6.7)
     a.set(xlabel='Residual multiplier τ',ylabel='Total variation distance',xlim=(0,2),ylim=(0,.18),xticks=[0,.5,1,1.5,2]);style(a)
-    a.legend(loc='upper left',fontsize=6.7)
+    a.legend(loc='lower left',bbox_to_anchor=(0,1.025),fontsize=6.7,ncol=1,borderaxespad=0)
     a=f.add_axes([.62,.105,.335,.17]);title(a,'g','Location screening along the same response')
     response(a,'regulatory_coverage_pct',v.INK,'Regulatory (146)')
     response(a,'energy_coverage_pct',v.LILAC,'All energy (69)')
     a.axvline(1,c='#79858C',ls='--',lw=.7)
     a.set(xlabel='Residual multiplier τ',ylabel='Top-10% site coverage (%)',xlim=(0,2),ylim=(30,52),xticks=[0,.5,1,1.5,2]);style(a)
-    a.legend(loc='upper left',fontsize=6.7)
+    a.legend(loc='lower left',bbox_to_anchor=(0,1.025),fontsize=6.7,ncol=1,borderaxespad=0)
     footer(f,['Two-channel Shapley values sum exactly to full allocation − epsilon-clipped prior. TV = half the sum of absolute share changes.',
               'Maps: five-seed mean; bars/ribbons: five-seed range, not confidence intervals. τ changes the fitted algorithm, not an environmental exposure.'])
     v.save(f,'Figure_7',['Deep_channel_cell_values.csv','Deep_channel_category_changes.csv','Deep_channel_summary.csv','Deep_residual_response.csv'],
-        'Exact two-channel fitted-model decomposition, category heterogeneity, per-seed channel stability, and conditional response to residual scaling. Functional attributions are not causal effects.')
+        'Exact two-channel fitted-model decomposition, category heterogeneity, per-seed channel stability, and conditional response to residual scaling. Thin translucent under-strokes trace the exact interval/response lines for emphasis; shaded response ribbons retain the actual seed min–max range. Functional attributions are not causal effects.')
 
 def figure8():
     f=plt.figure(figsize=(v.WIDTH,7.3))
@@ -118,12 +120,15 @@ def figure8():
             '256 original prior-design draws compared with five fitted training seeds; the ensembles have different meanings')
     hi=np.ceil(max(SS.prior_design_sd_pp.max(),SS.seed_sd_pp.max())*1000)/1000
     norm=PowerNorm(.5,0,hi)
+    aligned_maps=[]
     for i,(col,lab) in enumerate([('prior_design_sd_pp','Prior-design variation (256 draws)'),('seed_sd_pp','Training variation (five seeds)')]):
-        a=f.add_axes([.035+i*.49,.66,.44,.20]);v.mapplot(a,SS[col],norm,v.SEQ);title(a,chr(97+i),lab)
+        a=f.add_axes([.15+i*.50,.73,.33,.17]);a._external_coordinate_gutter=True
+        v.mapplot(a,SS[col],norm,v.SEQ);title(a,chr(97+i),lab);aligned_maps.append(a)
+    frame_height=aligned_maps[0].get_position().height
     cb=f.colorbar(v.mpl.cm.ScalarMappable(norm=norm,cmap=v.SEQ),cax=f.add_axes([.29,.635,.42,.012]),orientation='horizontal',ticks=[0,hi/4,hi])
     cb.outline.set_visible(False);cb.ax.tick_params(labelsize=7,length=2)
     cb.set_label('Grid-share SD (pp); shared square-root colour stretch',fontsize=7,labelpad=2)
-    a=f.add_axes([.17,.395,.43,.17]);title(a,'c','Category response to the two ensembles')
+    a=f.add_axes([.15,.415,.33,frame_height]);category_axis=a;title(a,'c','Category response to the two ensembles')
     prior=D.groupby('function_class').Clean_prior_share.sum()*100
     rng=np.random.default_rng(20261020)
     for i,cat in enumerate(CAT):
@@ -135,8 +140,8 @@ def figure8():
     a.set_yticks(range(5),[v.CAT[k][1] for k in CAT],fontsize=7);a.invert_yaxis()
     a.set_xlabel('Category mass − reference-prior mass (pp)',fontsize=7.5);style(a)
     f.legend(handles=[Patch(fc='#D8DCCF',alpha=.75,label='Prior designs (256)'),Line2D([],[],marker='D',ls='',color='#444A45',label='Fitted seeds (5)',ms=3)],
-             loc='center',bbox_to_anchor=(.395,.321),ncol=2,fontsize=6.2,handlelength=1,columnspacing=.7)
-    a=f.add_axes([.70,.395,.25,.17]);title(a,'d','Where variability comes from')
+             loc='center',bbox_to_anchor=(.315,.35),ncol=2,fontsize=6.2,handlelength=1,columnspacing=.7)
+    a=f.add_axes([.65,.415,.33,frame_height]);density_axis=a;title(a,'d','Where variability comes from')
     xx=SS.seed_sd_pp.to_numpy();yy=SS.prior_design_sd_pp.to_numpy()
     positive=(xx>0)&(yy>0);xx=xx[positive];yy=yy[positive]
     hb,_,_=density_scatter(a,np.log10(xx),np.log10(yy),v.DENSITY,size=3.0)
@@ -148,10 +153,10 @@ def figure8():
     a.text(.04,.95,f'Median SD ratio\n{AUD["median_design_sd_to_seed_sd_ratio"]:.1f}× (all cells)',transform=a.transAxes,va='top',fontsize=7.5,color=v.INK)
     a.text(.97,.035,f'n = {positive.sum():,} positive-SD cells',transform=a.transAxes,ha='right',fontsize=6.3,color='#52636B')
     style(a)
-    a=f.add_axes([.025,.105,.51,.19]);title(a,'e','Candidates for an independent-data audit')
+    a=f.add_axes([.15,.10,.33,frame_height]);a._external_coordinate_gutter=True;flag_axis=a;title(a,'e','Candidates for an independent-data audit')
     cm=ListedColormap(GROUPCOL);bn=BoundaryNorm([-.5,.5,1.5,2.5,3.5],4)
     v.mapplot(a,SS.diagnostic_group,bn,cm)
-    a=f.add_axes([.64,.105,.31,.19]);title(a,'f','Two distinct diagnostic axes')
+    a=f.add_axes([.65,.10,.33,frame_height]);adjustment_axis=a;title(a,'f','Two distinct diagnostic axes')
     tx=lambda value:np.arcsinh(np.asarray(value)/.0001)
     hb,_,_=density_scatter(a,tx(SS.neural_adjustment_abs_pp),tx(SS.prior_design_iqr_pp),v.DENSITY,size=3.2)
     xc=AUD['diagnostic_cutoffs']['absolute_adjustment_pp_q80'];yc=AUD['diagnostic_cutoffs']['design_iqr_pp_q80']
@@ -162,7 +167,9 @@ def figure8():
     a.set(xlim=(0,tx(SS.neural_adjustment_abs_pp.max())*1.03),ylim=(0,tx(SS.prior_design_iqr_pp.max())*1.03))
     a.set_xticks(tx([0,.001,.01,.1]),['0','.001','.01','.1']);a.set_yticks(tx([0,.001,.01,.1]),['0','.001','.01','.1']);style(a)
     handles=[Patch(fc=GROUPCOL[g],label=f'{GROUPLAB[g]} ({int((SS.diagnostic_group==g).sum()):,})') for g in range(4)]
-    f.legend(handles=handles,loc='lower left',bbox_to_anchor=(.055,.055),ncol=2,fontsize=6.5,handlelength=1,columnspacing=1)
+    f.legend(handles=handles,loc='lower left',bbox_to_anchor=(.04,.015),ncol=2,fontsize=6.5,handlelength=1,columnspacing=1)
+    f._aligned_axes_columns=[[aligned_maps[0],category_axis,flag_axis],[aligned_maps[1],density_axis,adjustment_axis]]
+    f._aligned_axes_rows=[[aligned_maps[0],aligned_maps[1]],[category_axis,density_axis],[flag_axis,adjustment_axis]]
     footer(f,['Audit flags use the upper quintile of |neural adjustment| and prior-design IQR; cutoffs are not optimized against benchmark sites.',
               'Design draws are assumption perturbations; seed variability is algorithm repeatability. Neither is calibrated predictive uncertainty.'])
     f._density_encoding={'type':'KDE percentile','panels':['d','f'],'bandwidth':'Scott',
@@ -171,10 +178,10 @@ def figure8():
         'Structural sensitivity compared with seed repeatability, category-specific responses, and bivariate independent-data audit flags. Category violins use a pink-negative/green-positive signed gradient with median and IQR; dark diamonds show all five fitted seeds, separated only in the categorical direction. Density panels use actual cell locations and within-panel Scott-KDE percentiles. Panel f uses asinh(pp/0.0001) coordinates, labelled in raw pp, with nonnegative limits; dashed lines retain the original upper-quintile cutoffs. Descriptive ensembles are not probability distributions of true emissions.')
 
 def figure9():
-    f=plt.figure(figsize=(v.WIDTH,7.05))
+    f=plt.figure(figsize=(v.WIDTH,5.2))
     heading(f,'Screening depends strongly on the shared source package',
             'Saved source-removal experiments · exact location counts · explicit overlap between benchmark cohorts')
-    a=f.add_axes([.22,.685,.66,.18]);title(a,'a','Benchmark cohort intersections')
+    a=f.add_axes([.035,.61,.27,.28]);title(a,'a','Benchmark cohort intersections')
     overlap_ribbons(a,87,59,10)
     # Actual site multiplicities, not occupied-cell counts.
     energy=pd.read_csv(SD/'energy_benchmark_sites.csv')
@@ -189,16 +196,16 @@ def figure9():
             top=order[:int(np.ceil(len(D)*pct/100))]
             curve.append({'map':k,'ranked_cells_pct':pct,'regulatory_pct':counts[top].sum()/146*100,'energy_pct':ecount[top].sum()/69*100})
     curves=pd.DataFrame(curve);curves.to_csv(SD/'Deep_source_removal_coverage_curves.csv',index=False)
-    for x,letter,key,lab in [(.10,'b','regulatory_pct','Regulatory-site screening (n = 146)'),(.60,'c','energy_pct','Energy-user screening (n = 69)')]:
-        a=f.add_axes([x,.398,.35,.21]);title(a,letter,lab)
+    for x,letter,key,lab in [(.41,'b','regulatory_pct','Regulatory-site screening (n = 146)'),(.76,'c','energy_pct','Energy-user screening (n = 69)')]:
+        a=f.add_axes([x,.61,.22,.28]);title(a,letter,lab)
         for base,removed,c in [('Clean_prior','No_POI_prior',v.TEAL),('Direct_mixture','No_POI_mixture',v.CORAL),('Full','No_POI_neural',v.INK)]:
             for k,ls in [(base,'-'),(removed,'--')]:
                 s=curves[curves['map']==k];a.plot(s.ranked_cells_pct,s[key],c=c,lw=1.2,ls=ls)
         a.axvline(10,c='#B8C1C5',ls=':',lw=.8);a.set(xlim=(0,50),ylim=(0,105),xlabel='Top-ranked cells (%)',ylabel='Site coverage (%)');style(a)
     f.legend(handles=[Line2D([],[],c=v.TEAL,label='Prior'),Line2D([],[],c=v.CORAL,label='Direct mixture'),Line2D([],[],c=v.INK,label='PGCAN'),
         Line2D([],[],c=v.GRAY,ls='-',label='Original package'),Line2D([],[],c=v.GRAY,ls='--',label='Source removed')],
-        loc='upper center',bbox_to_anchor=(.52,.352),ncol=5,fontsize=6.8,columnspacing=1,handlelength=1.8)
-    a=f.add_axes([.19,.102,.34,.175]);title(a,'d','Top-198 screening: exact hit counts')
+        loc='upper center',bbox_to_anchor=(.62,.505),ncol=3,fontsize=6.4,columnspacing=.8,handlelength=1.3)
+    a=f.add_axes([.16,.12,.30,.28]);title(a,'d','Top-198 screening: exact hit counts')
     methods=['Clean_prior','Direct_mixture','Full','No_POI_prior','No_POI_mixture','No_POI_neural']
     vals=SC.loc[methods,['regulatory_coverage_pct','energy_coverage_pct','unique_energy_hits']].to_numpy()
     hit=np.column_stack([np.rint(vals[:,0]*146/100),np.rint(vals[:,1]*69/100),vals[:,2]]).astype(int)
@@ -210,7 +217,7 @@ def figure9():
     a.set_yticks(range(6),['Prior','Mixture','PGCAN','Prior: removed','Mixture: removed','PGCAN: removed'],fontsize=6.8)
     a.set_xticks(range(3),['Regulatory','All energy','Energy-only'],fontsize=6.5);a.tick_params(length=0)
     a.axhline(2.5,c='white',lw=2);a.spines[['left','bottom']].set_visible(False)
-    a=f.add_axes([.61,.105,.345,.175]);title(a,'e','Source removal changes the allocation map')
+    a=f.add_axes([.57,.12,.40,.28]);title(a,'e','Source removal changes the allocation map')
     diff=(shares.No_POI_neural-shares.Full)*100
     lim=np.ceil(abs(diff).max()*100)/100
     norm=TwoSlopeNorm(0,-lim,lim);v.mapplot(a,diff,norm,v.DIFF)
@@ -221,7 +228,7 @@ def figure9():
     footer(f,['Top-198 = 10% of cells. Benchmark membership is withheld from training; POI geolocation is shared and 59 sites occur in both cohorts.',
               'The source package includes POI and linked patent/innovation fields. This perturbation measures source dependence, not emissions accuracy.'])
     v.save(f,'Figure_9',['Deep_shared_source_screening.csv','Deep_source_removal_coverage_curves.csv','Deep_source_removed_prior.npy','Deep_no_poi_seed_maps.npy','energy_benchmark_sites.csv'],
-        'Benchmark cohort intersections (87 regulatory-only, 59 shared, 10 energy-only sites), full-threshold source-removal screening curves, exact counts on overlapping and energy-only cohorts, and spatial redistribution. The two aligned set ribbons in a have lengths proportional to cohort counts and a common shared interval; they are not geographic positions. The source package includes POI and linked innovation variables; removal changes both the prior/target construction and network inputs. The comparison does not isolate a single feature effect.')
+        'Benchmark cohort intersections (87 regulatory-only, 59 shared, 10 energy-only sites), full-threshold source-removal screening curves, exact counts on overlapping and energy-only cohorts, and spatial redistribution. Panel a is an area-proportional two-set diagram: circle areas represent the 146 and 69 sites, and their intersection represents 59 shared sites; outside callouts label narrow exclusive regions. The source package includes POI and linked innovation variables; removal changes both prior/target construction and network inputs. The comparison does not isolate a single feature effect.')
 
 def overview():
     # Current plots only; no chronological backup accumulation.

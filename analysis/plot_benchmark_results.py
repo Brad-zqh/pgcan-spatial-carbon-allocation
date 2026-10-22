@@ -13,6 +13,7 @@ from sklearn.metrics import precision_recall_curve,r2_score
 import redraw_figures as v
 from visual_polish import density_norm
 from refined_primitives import density_scatter
+from precision_labels import error_label
 
 P=v.HERE;E=P/'experiments';S=v.SD
 protocol=json.loads((E/'protocol.json').read_text());assert protocol['completed']
@@ -130,7 +131,7 @@ def benchmark_plate():
  vals=np.array(rows);normalized=(vals-vals.min(0))/np.maximum(np.ptp(vals,axis=0),1e-12);normalized[:,:2]=1-normalized[:,:2]
  a.imshow(normalized,cmap=v.SEQ,vmin=0,vmax=1,aspect='auto');a._heatmap_units='Relative score'
  for i,row in enumerate(vals):
-  for j,value in enumerate(row):a.text(j,i,f'{value:.3g}' if j<2 else f'{value:.3f}',ha='center',va='center',fontsize=5.8,color='white' if normalized[i,j]>.65 else '#24351B')
+  for j,value in enumerate(row):a.text(j,i,error_label(value) if j<2 else f'{value:.3f}',ha='center',va='center',fontsize=5.8,color='white' if normalized[i,j]>.65 else '#24351B')
  a.set_yticks(range(9),[labels[k] for k in names],fontsize=5.7);a.set_xticks(range(3),['RMSE','MAE','R²'],fontsize=6.2);a.tick_params(length=0);title(a,'f','Method profiles: raw values')
  for a,key,l in zip(axs[6:9],['PGCAN','Multi_relation','Ridge_direct'],'ghi'):
   joint(a,key);title(a,l,labels[key]+': held-out shares')
@@ -138,7 +139,6 @@ def benchmark_plate():
  for key in ['Ridge_direct','Random_forest_direct','PGCAN','Multi_relation']:
   curve(a,abs(mean(key)-target)*100,labels[key],colors[key])
  a.set_xscale('symlog',linthresh=1e-5);a.set(xlabel='Absolute share error (pp)',ylabel='Cumulative cells',ylim=(0,1.02));title(a,'j','Distribution of held-out errors')
- a.legend(fontsize=5.7,loc='lower right',handlelength=1)
  a=axs[10];category_order=['industrial','transport_built','research','mixed','low_activity']
  val=np.array([[np.mean(abs(mean(k)[cats==c]-target[cats==c]))*100 for c in category_order] for k in names])
  norm=Normalize(0,float(val.max()));image=a.imshow(val,cmap=v.HEAT,norm=norm,aspect='auto')
@@ -153,13 +153,16 @@ def benchmark_plate():
  for k in ['PGCAN','Multi_relation','No_graph']:
   gg=strata[strata.method.eq(k)].groupby('support').proxy_rmse_pp.mean().reindex(['dense','middle','sparse'])
   a.plot(range(3),gg,c=colors[k],marker='o',ms=3,lw=1,label=labels[k])
- a.set_xticks(range(3),['Dense','Middle','Sparse'],fontsize=6);a.set(ylabel='Proxy RMSE (pp)',xlabel='Relative training support');a.legend(fontsize=5.7);title(a,'l','Spatial-support heterogeneity')
+ a.set_xticks(range(3),['Dense','Middle','Sparse'],fontsize=6);a.set(ylabel='Proxy RMSE (pp)',xlabel='Relative training support')
+ title(a,'l','Spatial-support heterogeneity')
  a=axs[12];coverage(a,['Ridge_direct','Random_forest_direct','PGCAN','Multi_relation']);title(a,'m','OOF site-screening curves')
  a=axs[13]
  for k in ['Ridge_direct','Random_forest_direct','PGCAN','Multi_relation']:
   pr,re,_=precision_recall_curve(rc>0,mean(k));a.plot(re,pr,c=colors[k],lw=1,label=labels[k])
  a.axhline((rc>0).mean(),c='#A0A890',ls=':',lw=.6);a.set(xlabel='Recall of occupied cells',ylabel='Precision',xlim=(0,1),ylim=(0,1));title(a,'n','Site-membership precision–recall')
  a=axs[14];forest(a,'elapsed_seconds',log=True);a.set_xlabel('Fit + selection time (s)');title(a,'o','Recorded CPU fitting cost')
+ f.legend(handles=[v.Line2D([],[],c=colors[k],lw=1.3,label=labels[k]) for k in ['Ridge_direct','Random_forest_direct','PGCAN','Multi_relation','No_graph']],
+  loc='lower center',bbox_to_anchor=(.5,1.015),ncol=5,fontsize=6.3,handlelength=1.3,columnspacing=.8,borderaxespad=0)
  f._layout_clearance_pairs=[(cb.ax,axs[13]._left_title)]
  footer(f,'Intervals in d–e and o: observed fold/seed ranges; dots: means. Colours in f are scaled separately by metric.\nAll regression metrics evaluate a constructed proxy, not measured emissions. Site curves use 146 regulatory sites; no site labels enter training.')
  f._density_encoding={'type':'KDE percentile','panels':['g','h','i'],'bandwidth':'Scott',
@@ -292,7 +295,7 @@ def graph_plate():
  a.set_xticks(range(3),['Space','Func.','Built'],fontsize=6.8,rotation=30,ha='right');a.set_yticks(range(3),['Space','Function','Built'],fontsize=6);a.tick_params(length=0);title(a,'d','Relation-edge Jaccard overlap')
  a=axs[4]
  for g,col,label in zip(graphs,RELC,REL):curve(a,np.linalg.norm(xy[g['row']]-xy[g['col']],axis=1)/1000,label,col)
- a.set(xlabel='Geographic edge length (km)',ylabel='Cumulative directed edges');a.legend(fontsize=5.5,loc='lower right',handlelength=1);title(a,'e','How far each relation reaches')
+ a.set(xlabel='Geographic edge length (km)',ylabel='Cumulative directed edges');title(a,'e','How far each relation reaches')
  a=axs[5];audit=pd.read_csv(S/'Benchmark_relation_audit.csv')
  a.bar(range(3),audit.same_function_fraction*100,color=RELC,width=.65)
  for i,val in enumerate(audit.same_function_fraction*100):a.text(i,val+2,f'{val:.1f}',ha='center',fontsize=6.5)
@@ -308,7 +311,7 @@ def graph_plate():
  a._heatmap_ticks=[.25,1/3,.45]
  a._heatmap_ticklabels=['0.25','1/3','0.45']
  for i in range(5):
-  for j in range(3):a.text(j,i,f'{val[i,j]:.2f}',ha='center',va='center',fontsize=6.6,color='white' if val[i,j]>.65 else v.INK)
+  for j in range(3):a.text(j,i,f'{val[i,j]:.3f}',ha='center',va='center',fontsize=6.6,color='white' if val[i,j]>.65 else v.INK)
  a.set_yticks(range(5),[v.CAT[k][1] for k in order],fontsize=5.8);a.set_xticks(range(3),['Space','Function','Built'],fontsize=6);a.tick_params(length=0);title(a,'j','Gate allocation by category')
  a=axs[10];entropy=-(G*np.log(np.maximum(G,1e-12))).sum(1)/np.log(3)
  a.set_position([.39,.225,.265,.165]);a._map_units='Gate entropy'
@@ -316,14 +319,22 @@ def graph_plate():
  ecbar=a.inset_axes([1.025,.12,.045,.76]);cb=f.colorbar(v.mpl.cm.ScalarMappable(norm=Normalize(0,1),cmap=v.SEQ),cax=ecbar,ticks=[0,.5,1]);cb.outline.set_visible(False);cb.ax.tick_params(labelsize=5.2,length=1.5)
  a=axs[11];a.set_position([.725,.225,.265,.165]);cm=ListedColormap(RELC);v.mapplot(a,G.argmax(1),BoundaryNorm(np.arange(-.5,3),3),cm)
  title(a,'l','Largest learned relation gate')
- a.legend(handles=[Patch(fc=c,label=l) for c,l in zip(RELC,['Space','Function','Built'])],loc='upper center',bbox_to_anchor=(.5,-.20),ncol=3,fontsize=6.8,handlelength=.6,columnspacing=.5,borderaxespad=0)
+ f.legend(handles=[Patch(fc=c,label=l) for c,l in zip(RELC,REL)],loc='lower center',bbox_to_anchor=(.5,1.015),ncol=3,fontsize=6.5,handlelength=1,columnspacing=1,borderaxespad=0)
  a=axs[12];keys=['Multi_relation','MR_no_spatial','MR_no_function','MR_no_built','MR_fixed_gate','MR_rewired','PGCAN']
  forest(a,'proxy_rmse_pp',keys,log=False);a.set_xlabel('Held-out proxy RMSE (pp)');title(a,'m','Relation and topology controls')
  a=axs[13]
+ gate_ranges=[]
  for i in range(3):
   data=gates[:,:,i].reshape(-1);q=np.quantile(data,[.05,.25,.5,.75,.95])
-  a.vlines(i,q[0],q[4],color=RELC[i],lw=1);a.vlines(i,q[1],q[3],color=RELC[i],lw=5);a.scatter(i,q[2],s=15,c='white',ec=RELC[i],lw=.8,zorder=3)
- a.set_xticks(range(3),['Space','Function','Built'],fontsize=6);a.set(xlim=(-.6,2.6),ylim=(0,1),ylabel='Node/seed gate distribution');title(a,'n','Gate dispersion: 5–95% range')
+  gate_ranges.extend(q[[0,4]])
+  a.hlines(i,q[0],q[4],color=RELC[i],lw=1.1);a.hlines(i,q[1],q[3],color=RELC[i],lw=6,alpha=.4)
+  a.scatter(q[2],i,s=23,c='white',ec=RELC[i],lw=.9,zorder=3)
+  a.annotate(f'{q[2]:.3f}',(q[2],i),xytext=(0,7),textcoords='offset points',ha='center',va='bottom',fontsize=6)
+ a.axvline(1/3,color='#8A948A',ls=':',lw=.7,zorder=0)
+ low,high=min(gate_ranges),max(gate_ranges);pad=(high-low)*.18
+ a.set(yticks=range(3),yticklabels=['Space','Function','Built'],ylim=(2.5,-.5),xlim=(low-pad,high+pad),xlabel='Gate weight (5–95% range)')
+ a.xaxis.set_major_locator(v.mpl.ticker.MaxNLocator(3));a.xaxis.set_major_formatter(v.mpl.ticker.FormatStrFormatter('%.3f'))
+ title(a,'n','Gate dispersion: 5–95% range')
  a=axs[14]
  for i,k in enumerate(keys):
   q=maps[(maps.method.eq(k))&(maps.scope.eq('full_domain_refit'))]
@@ -332,7 +343,7 @@ def graph_plate():
  a.set_yticks(range(len(keys)),[labels[k] for k in keys],fontsize=5.8);a.invert_yaxis();a.set_xlabel('Regulatory coverage: refit maps (%)');title(a,'o','Do semantic edges aid screening?')
  footer(f,'Edges in a–c: fixed random sample of 260 per relation; all edges enter audits. Relations use covariates and geometry, never benchmark labels.\nGates describe fitted computation, not causal importance or measured energy flows. Rewiring preserves each query’s edge count and weight multiset.')
  v.save(f,'Figure_12',['Benchmark_relation_audit.csv','Benchmark_relation_jaccard.csv','Benchmark_fold_metrics.csv','Benchmark_map_metrics.csv'],
-  'Fifteen-panel multi-relation graph audit. Up to eight neighbours are selected from the nearest 65 feature-space candidates within 10 km, with spatial fallback when none qualifies; the spatial relation uses distance 8NN. All training message sources are training nodes. Final full-domain graph structures and mean gates are described separately from held-out performance. In j, raw category mean gates are coloured on 0.25–0.45 with a neutral midpoint at the equal-gate reference 1/3; below/above this reference are pink/green. Func. abbreviates Function. This is a homogeneous grid-node multi-relation graph, not a building-street heterogeneous graph or an observed industrial-flow network.')
+  'Fifteen-panel multi-relation graph audit. Up to eight neighbours are selected from the nearest 65 feature-space candidates within 10 km, with spatial fallback when none qualifies; the spatial relation uses distance 8NN. All training message sources are training nodes. Final full-domain graph structures and mean gates are described separately from held-out performance. In j, raw category mean gates use 0.25–0.45 with a neutral midpoint of 1/3. In n, horizontal intervals show the 5th–95th percentiles of actual node/seed weights, thick segments show their IQR, and outlined points their medians. The axis expands this central range, and the dotted reference is 1/3; full weights remain bounded by 0 and 1. Func. abbreviates Function. This is a homogeneous grid-node multi-relation graph, not an observed industrial-flow network.')
  pd.DataFrame({'grid_id':cells.grid_id,'spatial_gate':G[:,0],'function_gate':G[:,1],'built_gate':G[:,2],
   'normalized_gate_entropy':entropy,'largest_gate':G.argmax(1)}).to_csv(S/'Benchmark_relation_gates.csv',index=False)
 

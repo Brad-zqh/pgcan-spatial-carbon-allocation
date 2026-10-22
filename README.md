@@ -87,6 +87,9 @@ These repeat predictions of the same 1,980 cells, not independent observations.
 Identical axes use asinh(share percentage / 0.001), with ticks in raw percentages.
 Larger translucent markers expose genuine seed variation; no artificial spread is added.
 R², RMSE and MAE still use the seed-mean ensemble and are unchanged.
+Displayed metrics use three decimals; positive errors below 0.001 are
+shown as <0.001. The pp unit means percentage points, not relative percent
+change. Values rounded to R² = 1.000 need not be mathematically exact.
 Scientific results in v0.1.0 remain valid;
 the current main branch carries this figure-design update.
 
