@@ -72,6 +72,7 @@ DISPLAY_NOTE=('N is the current node count; X, F and AX have 9, 5 and 9 channels
     'The 10 coordinate outputs comprise nine coefficients and one intercept. '
     'The MR gate receives [X, s, F] (16 inputs); the fused vector h has 16 channels. '
     'Both models add coordinate and context residuals before the prior-anchored allocation softmax. '
+    'Original spatial aggregation uses Gaussian-weighted distance 8NN with self-loops and symmetric degree normalization; held-out query weights are row-normalized. '
     'Counts include biases; MR replaces the PGCAN context head. Loss entries list the prior, graph and coefficient penalty weights. '
     'Original full-domain fits and buffered spatial refits use the separate epoch/seed settings shown. '
     'Inner epoch selection is checked every 15 epochs, with patience five checks and a minimum of 120 epochs. '

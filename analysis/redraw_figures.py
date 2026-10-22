@@ -31,7 +31,7 @@ from pyproj import Transformer
 import cartography_style as carto
 import map_classification as mc
 from visual_polish import complete_heatmap_legends
-from figure_finish import compact_rows
+from figure_finish import compact_rows,compact_columns,align_matrix_bars
 
 ROOT = Path(os.environ.get('PGCAN_PROJECT_ROOT',HERE.parent/'data/local/project'))
 WORK = ROOT / 'submission_revision_20260922'
@@ -199,7 +199,7 @@ def save(fig,name,source,caption):
     for ax in all_axes:
         for artist in ax.images:
             array=np.asarray(artist.get_array())
-            if array.ndim==2 and max(array.shape)<=100:
+            if array.ndim==2 and max(array.shape)<=100 and not getattr(artist,'_preserve_semantic_cmap',False):
                 key=(artist.cmap.name,artist.norm.vmin,artist.norm.vmax)
                 replacement=HEAT_DIFF if getattr(artist.norm,'vmin',0)<0 else HEAT
                 heat_replacements[key]=replacement;artist.set_cmap(replacement)
@@ -214,6 +214,12 @@ def save(fig,name,source,caption):
         if artist.get_text() and artist.get_gid() not in ['map_coordinate_label','map_north_label','map_scale_label','map_colourbar_label','compact_diagnostic_label']:
             artist.set_fontsize(max(8.2,min(14,artist.get_fontsize()*getattr(fig,'_font_scale',1.20))))
     compactness=compact_rows(fig,name)
+    horizontal_compactness=compact_columns(fig,name)
+    matrix_bar_alignment=align_matrix_bars(fig)
+    inset_axes=[a for a in fig.findobj(mpl.axes.Axes) if a not in fig.axes and a.get_visible()]
+    for a in inset_axes:a.set_in_layout(True)
+    export_extra=[*inset_axes,*[t for t in fig.findobj(mpl.text.Text) if t.get_visible() and t.get_text()],
+                  *fig.legends,*[a.get_legend() for a in fig.findobj(mpl.axes.Axes) if a.get_legend() is not None]]
     fig.canvas.draw()
     north_checks=[];coordinate_checks=[];coordinate_neighbour_checks=[]
     renderer=fig.canvas.get_renderer()
@@ -259,14 +265,14 @@ def save(fig,name,source,caption):
     families={tuple(t.get_fontfamily()) for t in fig.findobj(mpl.text.Text) if t.get_text()}
     assert families=={(FONT,)}, (name,families)
     for ext in ['pdf','svg','png']:
-        kw={'dpi':600,'bbox_inches':'tight','pad_inches':.035}
+        kw={'dpi':600,'bbox_inches':'tight','pad_inches':.035,'bbox_extra_artists':export_extra}
         fig.savefig(OUT/f'{name}.{ext}',**kw)
     # Lossless TIFF uses the same 600 dpi pixels; avoid rendering the identical
     # complex map a second time just to change its raster container.
     with Image.open(OUT/f'{name}.png') as raster:
         raster.save(OUT/f'{name}.tiff',dpi=(600,600),compression='tiff_lzw')
-    fig.savefig(QA/f'{name}.png',dpi=180,bbox_inches='tight',pad_inches=.035)
-    bbox=fig.get_tightbbox(fig.canvas.get_renderer())
+    fig.savefig(QA/f'{name}.png',dpi=180,bbox_inches='tight',pad_inches=.035,bbox_extra_artists=export_extra)
+    bbox=fig.get_tightbbox(fig.canvas.get_renderer(),bbox_extra_artists=export_extra)
     (OUT/f'{name}_caption.txt').write_text(caption,encoding='utf-8')
     manifest.append({'figure':name,'source_data':source,'caption':caption,
                      'width_mm':round((bbox.width+.07)*25.4,2),'height_mm':round((bbox.height+.07)*25.4,2),
@@ -283,6 +289,8 @@ def save(fig,name,source,caption):
                          'Pink - pale neutral - green; density: green low counts to pink high counts'),
                      'layout':getattr(fig,'_layout',None)})
     manifest[-1]['compactness']=compactness
+    manifest[-1]['horizontal_compactness']=horizontal_compactness
+    manifest[-1]['matrix_bar_alignment']=matrix_bar_alignment
     plt.close(fig)
     print('Saved',name,flush=True)
 
@@ -515,7 +523,6 @@ def forest(ax,keys,frame,labelmap=LABEL,colors=COL,column='primary_coverage',lo=
         vals=frame.loc[frame.method==k,column].to_numpy()*100
         mu=vals.mean();sd=vals.std(ddof=1) if len(vals)>1 else 0
         c=colors.get(k,INK)
-        if i%2==0:ax.axhspan(i-.47,i+.47,color='#F4F7F8',lw=0,zorder=-1)
         if show_points and len(vals)>1:
             ax.scatter(vals,np.full(len(vals),i)+np.linspace(-.13,.13,len(vals)),s=9,
                        facecolor='white',edgecolor=c,lw=.5,zorder=3)
@@ -603,11 +610,15 @@ def fig6():
     a.set_xticks([0,300,600,900]);a.set_yticks([.005,.01,.05,.1,.5],['0.005','0.01','0.05','0.1','0.5']);quiet(a)
     a.legend(loc='upper left',bbox_to_anchor=(-.02,-.23),ncol=3,handlelength=1.2,columnspacing=.7)
     panel(a,'a','Approximation to constructed target')
-    rows=[('Control','Control (λ = 0.025)'),('Prior_005','Prior penalty 0.005'),('Prior_000','Prior penalty 0'),('No_POI_lineage','No POI / patent paths')]
+    rows=[('Control','Control (λ = 0.025)'),('Prior_005','λ = 0.005'),('Prior_000','λ = 0'),('No_POI_lineage','No POI / patents')]
+    seed_runs=pd.read_csv(DATA/'new_runs.csv')
     for i,(k,lab) in enumerate(rows):
         r=ns.loc[k];col=[INK,LILAC,CORAL,TEAL][i]
-        b.axhspan(i-.46,i+.46,color='#F5F7F8' if i%2==0 else 'white',lw=0)
-        b.errorbar(r.coverage*100,i,xerr=r.sd*100,fmt='o',c=col,ms=4,capsize=2,lw=1.1)
+        values=seed_runs.loc[seed_runs.configuration.eq(k),'primary_coverage'].to_numpy()*100
+        np.testing.assert_allclose([values.mean(),values.std(ddof=1)],[r.coverage*100,r.sd*100],atol=1e-10)
+        b.scatter(values,np.full(len(values),i)+np.linspace(-.13,.13,len(values)),
+                  s=13,facecolors='white',edgecolors=col,lw=.65,zorder=3)
+        b.errorbar(r.coverage*100,i,xerr=r.sd*100,fmt='D',c=col,mec='white',mew=.5,ms=4.6,capsize=3,lw=1.1,zorder=4)
         b.text(1.04,i,f'{r.coverage*100:.2f}',transform=b.get_yaxis_transform(),fontsize=6.8,va='center')
     b.set_yticks(range(4),[v[1] for v in rows],fontsize=7);b.invert_yaxis();b.set_xlim(0,60)
     b.set_xticks([0,20,40,60]);b.set_xlabel('Coverage (%)');b.tick_params(axis='y',length=0);b.spines['left'].set_visible(False);quiet(b,'x')
@@ -631,7 +642,7 @@ def fig6():
     panel(d,'d','Paired neural-minus-baseline coverage')
     foot(f,'Training lines: five-seed mean; ribbons / bars: sample seed SD | Scenario ranges describe design sensitivity')
     save(f,'Figure_6',['new_training_history.json','new_summary.csv','prior_scenarios_256.csv','Data_S10_paired_scenarios.csv'],
-         'Constructed-target approximation, regularization changes and paired heuristic scenarios. Shaded training ribbons and coverage bars show sample seed SD.')
+         'Constructed-target approximation, regularization changes and paired heuristic scenarios. Shaded training ribbons and capped coverage intervals show sample seed SD. Open circles in b are the actual five seed results, separated only along the categorical direction; diamonds show their means. No decorative background or shadow bands are used.')
 
 def figs1():
     f,axs=plt.subplots(2,2,figsize=(WIDTH,5.15));f.subplots_adjust(left=.06,right=.975,top=.94,bottom=.14,hspace=.55,wspace=.13)

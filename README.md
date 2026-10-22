@@ -76,12 +76,18 @@ retraining/plot regeneration is **not self-contained** without those inputs.
 
 Figure 13 places the PGCAN, multi-relation and ridge comparison first,
 then the remaining baselines and six controls. It plots every real paired
-cell without sampling or jitter, with metrics in each panel's upper-left
+cell once per saved seed without sampling or jitter, with metrics in each panel's upper-left
 corner and one scatter per configuration. Colour is the within-panel percentile of a
 bivariate Gaussian KDE (Scott bandwidth), **not a bin count or an error sign**.
 The individual vertical bars show 0–100 density percentile. Numerical ties
 use log density rounded to ten decimals before average-rank assignment.
-R², RMSE and MAE are unchanged. Scientific results in v0.1.0 remain valid;
+Scatter positions are actual seed-specific OOF predictions: three per cell for
+stochastic methods and one for deterministic methods (81,180 marks total).
+These repeat predictions of the same 1,980 cells, not independent observations.
+Identical axes use asinh(share percentage / 0.001), with ticks in raw percentages.
+Larger translucent markers expose genuine seed variation; no artificial spread is added.
+R², RMSE and MAE still use the seed-mean ensemble and are unchanged.
+Scientific results in v0.1.0 remain valid;
 the current main branch carries this figure-design update.
 
 ![Current held-out model atlas](docs/assets/Figure_13.png)

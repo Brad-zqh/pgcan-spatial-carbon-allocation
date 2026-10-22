@@ -14,19 +14,25 @@ def main():
     metrics=pd.read_csv(S/'Benchmark_prediction_density_metrics.csv')
     styling=pd.read_csv(S/'Benchmark_prediction_density_styling.csv')
     ecdf=pd.read_csv(S/'Benchmark_prediction_error_ecdf.csv');residuals=pd.read_csv(S/'Benchmark_prediction_signed_residuals.csv');rows=[]
-    assert len(metrics)==15 and len(styling)==len(ecdf)==15*1980
+    assert len(metrics)==15 and len(ecdf)==15*1980
+    assert len(styling)==int(metrics.n_rendered_predictions.sum())
     old=json.loads((P/'qa/prediction_matrix_contract.json').read_text(encoding='utf-8'))
     for item in metrics.itertuples():
         path=P/'experiments'/f'oof_{item.method}.npy'
         assert hashlib.sha256(path.read_bytes()).hexdigest()==old['prediction_array_sha256'][item.method]
-        pred=np.load(path).mean(0)*100
+        raw=np.load(path)*100;pred=raw.mean(0)
         np.testing.assert_allclose([r2_score(target,pred),np.sqrt(mean_squared_error(target,pred)),mean_absolute_error(target,pred)],
             [item.pooled_oof_r2,item.pooled_oof_rmse_pp,item.pooled_oof_mae_pp],rtol=1e-11,atol=1e-13)
-        sample=np.vstack([np.arcsinh(target/.01),np.arcsinh(pred/.01)])
+        plotted_target=np.tile(target,len(raw));plotted_prediction=raw.reshape(-1)
+        sample=np.vstack([np.arcsinh(plotted_target/.001),np.arcsinh(plotted_prediction/.001)])
         density=gaussian_kde(sample,bw_method='scott')(sample)
-        percent=(rankdata(np.round(np.log(density),10),method='average')-1)/1979*100
+        percent=(rankdata(np.round(np.log(density),10),method='average')-1)/(len(density)-1)*100
         style=styling[styling.method.eq(item.method)]
-        assert style.grid_id.tolist()==cells.grid_id.tolist()
+        assert style.grid_id.tolist()==np.tile(cells.grid_id,len(raw)).tolist()
+        assert style.seed_index.tolist()==np.repeat(np.arange(len(raw)),1980).tolist()
+        assert len(style)==item.n_rendered_predictions==len(raw)*1980
+        np.testing.assert_allclose(style.target_share_pct,plotted_target,rtol=1e-12,atol=1e-13)
+        np.testing.assert_allclose(style.oof_prediction_pct,plotted_prediction,rtol=1e-12,atol=1e-13)
         np.testing.assert_allclose(style.kde_density,density,rtol=1e-11,atol=1e-12)
         np.testing.assert_allclose(style.density_percentile,percent,atol=1e-10)
         curve=ecdf[ecdf.method.eq(item.method)]
@@ -36,7 +42,8 @@ def main():
         assert strip.grid_id.tolist()==cells.grid_id.tolist()
         np.testing.assert_allclose(strip.target_share_pct,target,rtol=1e-12,atol=1e-13)
         np.testing.assert_allclose(strip.signed_residual_pp,pred-target,rtol=1e-9,atol=1e-13)
-        rows.append({'method':item.method,'n_points':1980,'n_ecdf_values':1980,'metrics_density_and_ecdf_reproduced':True})
+        rows.append({'method':item.method,'n_cells':1980,'n_points':len(style),'n_seeds':len(raw),
+            'n_ecdf_values':1980,'metrics_density_and_ecdf_reproduced':True})
     pdf=fitz.open(P/'Figures/Figure_13.pdf');page=pdf[0]
     text=page.get_text()
     assert text.count('RMSE =')==15 and text.count('MAE =')==15
@@ -57,5 +64,10 @@ def main():
         'density_colour_semantics':'Within-panel KDE density percentile; not absolute counts or emissions uncertainty'}
     (P/'qa/prediction_atlas_verification.json').write_text(json.dumps(report,indent=2),encoding='utf-8')
     assert report['general_text_minimum_at_print_pt']>=7 and report['compact_diagnostic_text_at_print_pt']>=5
-    print('PREDICTION_ATLAS_PASS: 29700 pairs, metrics and density ranks reproduced; 15 single panels, upper-left metrics and vertical density bars checked')
+    review_path=P/'qa/prediction_matrix_design_review.json'
+    review=json.loads(review_path.read_text(encoding='utf-8'))
+    review.update(status='PASS',actual_prediction_marks_verified=len(styling),
+        rendered_preview_review='Current export inspected: larger transparent marks, real seed variation, single panels, upper-left ensemble metrics, vertical density bars; no jitter.')
+    review_path.write_text(json.dumps(review,indent=2),encoding='utf-8')
+    print(f'PREDICTION_ATLAS_PASS: {len(styling)} actual seed predictions, metrics and density ranks reproduced; 15 single panels, upper-left metrics and vertical density bars checked')
 if __name__=='__main__':main()

@@ -17,6 +17,7 @@ from matplotlib.patches import Patch, FancyBboxPatch
 from PIL import Image, ImageDraw, ImageFont
 import redraw_figures as v
 from visual_polish import density_norm,tag_small_text
+from refined_primitives import signed_violin,overlap_ribbons,density_scatter
 
 P=v.HERE; SD=v.SD; D=v.grid
 CS=pd.read_csv(SD/'Deep_channel_summary.csv')
@@ -50,6 +51,7 @@ def response(a,metric,color,label):
     x=g.mean().index.to_numpy();mean=g.mean().to_numpy()
     a.fill_between(x,g.min(),g.max(),color=color,alpha=.15,lw=0)
     a.plot(x,mean,color=color,lw=1.5,label=label)
+    a.plot(x[::5],mean[::5],ls='',marker='o',ms=2.5,color=color,mec='white',mew=.35)
 
 def figure7():
     f=plt.figure(figsize=(v.WIDTH,7.65))
@@ -79,10 +81,14 @@ def figure7():
     a.legend(loc='upper left',bbox_to_anchor=(-.32,-.28),ncol=3,fontsize=6.7,handletextpad=.4,columnspacing=1)
     a=f.add_axes([.67,.40,.285,.18]);title(a,'e','Channel stability across seeds')
     for j,row in CS.iterrows():
-        c=v.LILAC if row.cancellation_fraction>.4 else '#BFC9CC'
-        a.plot([0,1,2],np.array([row.coordinate_tv,row.context_tv,row.net_tv])*100,c=c,lw=.8,alpha=.9,zorder=1)
+        c=['#AAC19E','#D7AAC5','#6F9958','#B85B91','#B5C2B8'][j%5]
+        a.plot([0,1,2],np.array([row.coordinate_tv,row.context_tv,row.net_tv])*100,c=c,lw=.8,alpha=.65,zorder=1)
     means=CS[['coordinate_tv','context_tv','net_tv']].mean().to_numpy()*100
     a.scatter([0,1,2],means,c=[CO,CT,v.INK],s=34,edgecolors='white',lw=.6,zorder=3)
+    lo=CS[['coordinate_tv','context_tv','net_tv']].min().to_numpy()*100
+    hi=CS[['coordinate_tv','context_tv','net_tv']].max().to_numpy()*100
+    a.fill_between([0,1,2],lo,hi,color='#ADBEA4',alpha=.15,lw=0,zorder=.3)
+    a.plot([0,1,2],means,color='#536653',lw=1.25,zorder=2)
     a.set_xticks([0,1,2],['Coordinate','Context','Net'],fontsize=7)
     a.set(ylabel='Attributed redistribution (TV, %)',ylim=(0,9))
     a.text(.02,.98,f'Mean within-seed cancellation: {CS.cancellation_fraction.mean()*100:.1f}%',
@@ -91,6 +97,7 @@ def figure7():
     a=f.add_axes([.10,.105,.365,.17]);title(a,'f','Response to residual strength')
     response(a,'tv_prior',v.LILAC,'Distance from prior')
     response(a,'tv_target',v.INK,'Distance from target')
+    xx=RR.groupby('residual_multiplier').tv_target.mean().index.to_numpy()
     a.axvline(1,c='#79858C',ls='--',lw=.7);a.text(1.025,.98,'Fitted',transform=a.get_xaxis_transform(),va='top',fontsize=6.7)
     a.set(xlabel='Residual multiplier τ',ylabel='Total variation distance',xlim=(0,2),ylim=(0,.18),xticks=[0,.5,1,1.5,2]);style(a)
     a.legend(loc='upper left',fontsize=6.7)
@@ -122,23 +129,19 @@ def figure8():
     for i,cat in enumerate(CAT):
         b=CD[(CD.category==cat)&(CD.source=='Prior_design')].mass_pct.to_numpy()-prior[cat]
         s=CD[(CD.category==cat)&(CD.source=='Neural_seeds')].mass_pct.to_numpy()-prior[cat]
-        vio=a.violinplot([b],positions=[i-.12],orientation='horizontal',widths=.55,showextrema=False)
-        for body in vio['bodies']:body.set(facecolor=CT,edgecolor=CT,alpha=.35,linewidth=.5)
-        a.scatter([np.median(b)],[i-.12],s=12,c=CT,zorder=3)
-        a.scatter(s,np.full(len(s),i+.20)+rng.uniform(-.025,.025,len(s)),s=13,c=v.LILAC,edgecolors='white',lw=.3,zorder=3)
+        signed_violin(a,b,i-.11,v.DIFF,width=.57)
+        a.scatter(s,i+.20+np.linspace(-.05,.05,len(s)),s=19,marker='D',c='#444A45',edgecolors='white',lw=.4,zorder=4)
     a.axvline(0,c='#8E989E',ls='--',lw=.7)
     a.set_yticks(range(5),[v.CAT[k][1] for k in CAT],fontsize=7);a.invert_yaxis()
     a.set_xlabel('Category mass − reference-prior mass (pp)',fontsize=7.5);style(a)
-    f.legend(handles=[Patch(fc=CT,alpha=.45,label='Prior designs (256)'),Line2D([],[],marker='o',ls='',color=v.LILAC,label='Fitted seeds (5)',ms=3)],
+    f.legend(handles=[Patch(fc='#D8DCCF',alpha=.75,label='Prior designs (256)'),Line2D([],[],marker='D',ls='',color='#444A45',label='Fitted seeds (5)',ms=3)],
              loc='center',bbox_to_anchor=(.395,.321),ncol=2,fontsize=6.2,handlelength=1,columnspacing=.7)
     a=f.add_axes([.70,.395,.25,.17]);title(a,'d','Where variability comes from')
     xx=SS.seed_sd_pp.to_numpy();yy=SS.prior_design_sd_pp.to_numpy()
     positive=(xx>0)&(yy>0);xx=xx[positive];yy=yy[positive]
-    hb=a.hexbin(np.log10(xx),np.log10(yy),gridsize=32,mincnt=1,cmap=v.DENSITY,linewidths=0)
-    hb.set_norm(density_norm(hb.get_array()))
-    maximum=float(hb.get_array().max());cb=f.colorbar(hb,cax=a.inset_axes([1.035,.05,.04,.9]),ticks=[1,2,10,maximum])
-    cb.set_ticklabels(['1','2','10',f'{maximum:g}']);cb.ax.minorticks_off()
-    cb.set_label('Cells',fontsize=6.2);cb.outline.set_visible(False);tag_small_text(cb)
+    hb,_,_=density_scatter(a,np.log10(xx),np.log10(yy),v.DENSITY,size=3.0)
+    cb=f.colorbar(hb,cax=a.inset_axes([1.035,0,.035,1]),ticks=[0,50,100]);cb.ax.minorticks_off()
+    cb.set_label('Density percentile (%)',fontsize=6.2);cb.outline.set_visible(False);tag_small_text(cb)
     limits=(np.floor(np.log10(min(xx.min(),yy.min()))),np.ceil(np.log10(max(xx.max(),yy.max()))))
     a.plot(limits,limits,c=v.GOLD,ls='--',lw=.8)
     a.set(xlabel='log₁₀ seed SD (pp)',ylabel='log₁₀ design SD (pp)',xlim=limits,ylim=limits)
@@ -149,41 +152,30 @@ def figure8():
     cm=ListedColormap(GROUPCOL);bn=BoundaryNorm([-.5,.5,1.5,2.5,3.5],4)
     v.mapplot(a,SS.diagnostic_group,bn,cm)
     a=f.add_axes([.64,.105,.31,.19]);title(a,'f','Two distinct diagnostic axes')
-    # No shaded mask or low-opacity background: every cell is an opaque mark.
-    colors=np.where(SS.prior_design_iqr_pp>=AUD['diagnostic_cutoffs']['design_iqr_pp_q80'],v.LILAC,v.TEAL)
-    a.scatter(SS.neural_adjustment_abs_pp,SS.prior_design_iqr_pp,s=5,c=colors,alpha=1,lw=0,rasterized=False)
+    tx=lambda value:np.arcsinh(np.asarray(value)/.0001)
+    hb,_,_=density_scatter(a,tx(SS.neural_adjustment_abs_pp),tx(SS.prior_design_iqr_pp),v.DENSITY,size=3.2)
     xc=AUD['diagnostic_cutoffs']['absolute_adjustment_pp_q80'];yc=AUD['diagnostic_cutoffs']['design_iqr_pp_q80']
-    a.axvline(xc,c='#777777',ls='--',lw=.65);a.axhline(yc,c='#777777',ls='--',lw=.65)
-    a.legend(handles=[Line2D([],[],marker='o',ls='',color=v.TEAL,label='IQR below cutoff',ms=3),Line2D([],[],marker='o',ls='',color=v.LILAC,label='IQR at/above cutoff',ms=3)],
-             loc='upper left',bbox_to_anchor=(.01,.99),fontsize=6.2,handletextpad=.3)
-    a.set_xscale('symlog',linthresh=.0001);a.set_yscale('symlog',linthresh=.0001)
+    a.axvline(tx(xc),c='#777777',ls='--',lw=.65);a.axhline(tx(yc),c='#777777',ls='--',lw=.65)
+    cb=f.colorbar(hb,cax=a.inset_axes([1.035,0,.035,1]),ticks=[0,50,100]);cb.outline.set_visible(False)
+    cb.set_label('Density percentile (%)',fontsize=6.2);tag_small_text(cb)
     a.set(xlabel='Absolute neural adjustment (pp)',ylabel='Prior-design IQR (pp)')
-    a.set_xticks([0,.001,.01,.1],['0','.001','.01','.1']);a.set_yticks([0,.001,.01,.1],['0','.001','.01','.1']);style(a)
+    a.set(xlim=(0,tx(SS.neural_adjustment_abs_pp.max())*1.03),ylim=(0,tx(SS.prior_design_iqr_pp.max())*1.03))
+    a.set_xticks(tx([0,.001,.01,.1]),['0','.001','.01','.1']);a.set_yticks(tx([0,.001,.01,.1]),['0','.001','.01','.1']);style(a)
     handles=[Patch(fc=GROUPCOL[g],label=f'{GROUPLAB[g]} ({int((SS.diagnostic_group==g).sum()):,})') for g in range(4)]
     f.legend(handles=handles,loc='lower left',bbox_to_anchor=(.055,.055),ncol=2,fontsize=6.5,handlelength=1,columnspacing=1)
     footer(f,['Audit flags use the upper quintile of |neural adjustment| and prior-design IQR; cutoffs are not optimized against benchmark sites.',
               'Design draws are assumption perturbations; seed variability is algorithm repeatability. Neither is calibrated predictive uncertainty.'])
+    f._density_encoding={'type':'KDE percentile','panels':['d','f'],'bandwidth':'Scott',
+        'point_positions':'Actual cell pairs: log10 in d and asinh(pp/0.0001) in f; no jitter'}
     v.save(f,'Figure_8',['Deep_structural_sensitivity_cells.csv','Deep_category_design_vs_seed.csv','Deep_prior_design_metrics.csv'],
-        'Structural sensitivity compared with seed repeatability, category-specific responses, and bivariate independent-data audit flags. Descriptive ensembles are not probability distributions of true emissions.')
+        'Structural sensitivity compared with seed repeatability, category-specific responses, and bivariate independent-data audit flags. Category violins use a pink-negative/green-positive signed gradient with median and IQR; dark diamonds show all five fitted seeds, separated only in the categorical direction. Density panels use actual cell locations and within-panel Scott-KDE percentiles. Panel f uses asinh(pp/0.0001) coordinates, labelled in raw pp, with nonnegative limits; dashed lines retain the original upper-quintile cutoffs. Descriptive ensembles are not probability distributions of true emissions.')
 
 def figure9():
     f=plt.figure(figsize=(v.WIDTH,7.05))
     heading(f,'Screening depends strongly on the shared source package',
             'Saved source-removal experiments · exact location counts · explicit overlap between benchmark cohorts')
-    # Measured cohort overlap replaces the redundant box-and-arrow sketch.
-    a=f.add_axes([.20,.745,.69,.135]);title(a,'a','Benchmark cohort intersections')
-    counts_overlap=np.array([146-59,59,69-59])
-    a.bar(range(3),counts_overlap,color=[v.TEAL,v.LILAC,v.CORAL],width=.54)
-    for i,value in enumerate(counts_overlap):a.text(i,value+2,str(value),ha='center',va='bottom',fontsize=8)
-    a.set(ylim=(0,105),ylabel='Distinct sites',xticks=[],xlim=(-.6,2.6));style(a)
-    dots=f.add_axes([.20,.665,.69,.065]);dots.set(xlim=(-.6,2.6),ylim=(-.5,1.5))
-    membership=np.array([[1,0],[1,1],[0,1]])
-    for i,col in enumerate([v.TEAL,v.LILAC,v.CORAL]):
-        dots.scatter([i,i],[1,0],c=[col if b else '#E3E3E3' for b in membership[i]],s=24,zorder=3)
-        if membership[i].all():dots.plot([i,i],[0,1],color=col,lw=1.2)
-    dots.set_yticks([1,0],['Regulatory','Energy-user'],fontsize=7)
-    dots.set_xticks(range(3),['Regulatory only','Shared','Energy only'],fontsize=7)
-    dots.tick_params(length=0);dots.spines[:].set_visible(False)
+    a=f.add_axes([.22,.685,.66,.18]);title(a,'a','Benchmark cohort intersections')
+    overlap_ribbons(a,87,59,10)
     # Actual site multiplicities, not occupied-cell counts.
     energy=pd.read_csv(SD/'energy_benchmark_sites.csv')
     ei=pd.Index(D.grid_id).get_indexer(energy.grid_id)
@@ -229,7 +221,7 @@ def figure9():
     footer(f,['Top-198 = 10% of cells. Benchmark membership is withheld from training; POI geolocation is shared and 59 sites occur in both cohorts.',
               'The source package includes POI and linked patent/innovation fields. This perturbation measures source dependence, not emissions accuracy.'])
     v.save(f,'Figure_9',['Deep_shared_source_screening.csv','Deep_source_removal_coverage_curves.csv','Deep_source_removed_prior.npy','Deep_no_poi_seed_maps.npy','energy_benchmark_sites.csv'],
-        'Benchmark cohort intersections (87 regulatory-only, 59 shared, 10 energy-only sites), full-threshold source-removal screening curves, exact counts on overlapping and energy-only cohorts, and spatial redistribution. The source package includes POI and linked innovation variables; removal changes both the prior/target construction and network inputs. The comparison does not isolate a single feature effect.')
+        'Benchmark cohort intersections (87 regulatory-only, 59 shared, 10 energy-only sites), full-threshold source-removal screening curves, exact counts on overlapping and energy-only cohorts, and spatial redistribution. The two aligned set ribbons in a have lengths proportional to cohort counts and a common shared interval; they are not geographic positions. The source package includes POI and linked innovation variables; removal changes both the prior/target construction and network inputs. The comparison does not isolate a single feature effect.')
 
 def overview():
     # Current plots only; no chronological backup accumulation.

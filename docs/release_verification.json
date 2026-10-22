@@ -1,6 +1,6 @@
 {
   "status": "PASS",
-  "public_files": 96,
+  "public_files": 97,
   "raw_or_licensed_assets_copied": false,
   "credential_matches": 0,
   "anonymous_cells": 1980,
@@ -34,18 +34,18 @@
     },
     {
       "path": "analysis/enhanced_analysis.py",
-      "bytes": 30118,
-      "sha256": "8a4dbb4a5848e5491014ebde25f00e302c2977f9891516d11d4870aeb2014b60"
+      "bytes": 30448,
+      "sha256": "d768b725cfdc9aa7702466cce25ee8f91a43c3f924f1a54f3d04d6df2e9ec98a"
     },
     {
       "path": "analysis/figure_finish.py",
-      "bytes": 3315,
-      "sha256": "1616c38a4076f415fb298c990402832c302b7fb29d36af8dbdb3b170b2098f4a"
+      "bytes": 6565,
+      "sha256": "d64b351cdf6a58a336aa140a0172cedd1415710d9591198fa0a6edeec21aff67"
     },
     {
       "path": "analysis/layerwise_architecture.py",
-      "bytes": 4936,
-      "sha256": "e9a84cb53f0d9ca17742911568a8b2e8df4494082166deaa2c9b812b157792c4"
+      "bytes": 5104,
+      "sha256": "18a138c1fb0776be36b3b2f2bd4a7513b7f63dc06b1a31f727910fefaa2fe4db"
     },
     {
       "path": "analysis/map_classification.py",
@@ -74,18 +74,18 @@
     },
     {
       "path": "analysis/plot_allocation_atlas.py",
-      "bytes": 10943,
-      "sha256": "e74d91a1240d07171e008e706c30604da5d82983413de0b13b3f55aebc95917b"
+      "bytes": 11457,
+      "sha256": "49b74b08d4599c1c81a5cb820e572478d36cc7c496d7c785cf0ae3e977e5c203"
     },
     {
       "path": "analysis/plot_benchmark_results.py",
-      "bytes": 31279,
-      "sha256": "f9a4fee9fd1ec4f72f5a60517d5274074dff1e7f3dc30cedcb3025e6a3d48353"
+      "bytes": 32085,
+      "sha256": "0a9082cf98f0f402e0cac645eea9af43a9f8e6bf980d41930119633a72364acb"
     },
     {
       "path": "analysis/plot_deep_analysis.py",
-      "bytes": 19228,
-      "sha256": "f32f3515ccbbc97cf32d7edc6213452714d3bb4988652da5bfab4739d1c3bd0d"
+      "bytes": 19028,
+      "sha256": "84c074e122a30619d563727ac0bca3a43c128ddbeb66410a27edbd31aea76a34"
     },
     {
       "path": "analysis/plot_error_diagnostics.py",
@@ -94,8 +94,8 @@
     },
     {
       "path": "analysis/plot_prediction_matrix.py",
-      "bytes": 11283,
-      "sha256": "e4998b37c31f4f128e4aff68c30186ea48004c645d5d49acd33bb091de07b08e"
+      "bytes": 12322,
+      "sha256": "9dc0ea1fe485a791239c8359bb5100ae13c9a8284cf48c2ad34bfd47dedec216"
     },
     {
       "path": "analysis/prepare_administrative_context.py",
@@ -124,13 +124,18 @@
     },
     {
       "path": "analysis/redraw_figures.py",
-      "bytes": 47980,
-      "sha256": "70be0b4e76c7cebd02d880be56a25479d895d35c6a0400c7f7c8a54cd29a5f01"
+      "bytes": 49229,
+      "sha256": "359960d5da7afdd69ead3780c0c9927c811b2ac9febecf378381bfc7b4260067"
     },
     {
       "path": "analysis/refine_palette_and_maps.py",
       "bytes": 3767,
       "sha256": "25e9bfff22da37c6c254644193ad06770a43d2e90517860ab25cf31f581347f6"
+    },
+    {
+      "path": "analysis/refined_primitives.py",
+      "bytes": 3428,
+      "sha256": "e3fc9d362ccdc36bb95c846fad8c07366a2e844556313705e9be0b086001e652"
     },
     {
       "path": "analysis/run_direct_baselines.py",
@@ -154,8 +159,8 @@
     },
     {
       "path": "analysis/verify_prediction_atlas.py",
-      "bytes": 4478,
-      "sha256": "29d3b436fabca5e2a91ac44e28a9bc9ccc4ec1bf94bfc400360b94caadfb10d9"
+      "bytes": 5585,
+      "sha256": "dbba56ecc40a4b60d49fe97f7ae2aea74e08d9316a03cd360a68c00c20f2cf74"
     },
     {
       "path": "analysis/visual_polish.py",
@@ -224,8 +229,8 @@
     },
     {
       "path": "data/results/Benchmark_prediction_density_metrics.csv",
-      "bytes": 1664,
-      "sha256": "ff659e8754e19c7f9b30cf4a8adee595d461381ac28b0eb3b897752eff794702"
+      "bytes": 1762,
+      "sha256": "46492628ca36e9f9d722c860b1d829546db8ae992d4b36f05f1d9a9f6fc16500"
     },
     {
       "path": "data/results/Benchmark_relation_audit.csv",
@@ -414,8 +419,8 @@
     },
     {
       "path": "docs/assets/Figure_13.png",
-      "bytes": 477129,
-      "sha256": "08e59dca064e4638323ef463ec95249e6e80d0c398d4723c850355391b2e93ae"
+      "bytes": 550765,
+      "sha256": "44ac48bb90fbec28a44458c14583e8796fd0f07993d8e6cbff58514253216f88"
     },
     {
       "path": "docs/assets/Table_4.png",
@@ -434,8 +439,8 @@
     },
     {
       "path": "docs/source_manifest.json",
-      "bytes": 9909,
-      "sha256": "ffd717938761bd85050c91d6a1cb580f3abe4e7f305974ea836f758b3550d706"
+      "bytes": 10301,
+      "sha256": "ccb2387647cbfdc3daa695f23f0bd062d6374271ce84503cf5ec718d046a2257"
     },
     {
       "path": "docs/SUPPLEMENTAL_REFERENCE_CHECK.md",
@@ -449,13 +454,13 @@
     },
     {
       "path": "pyproject.toml",
-      "bytes": 676,
-      "sha256": "1bcbf9e03dc4fef2ca76b6d953fde3d8ecd5556703a7734bfafb4104760e7fc1"
+      "bytes": 677,
+      "sha256": "059db1829c1e7a0059307f013517b78dd50d7b0d755fe8e04b7dcb058d744236"
     },
     {
       "path": "README.md",
-      "bytes": 5864,
-      "sha256": "f3d86ffdfc10a3d4b90f29e9d19e43382e2489509c218dbf4ca34b4212c9bab7"
+      "bytes": 6333,
+      "sha256": "b5c531cc41816871f303898370afaf8808c4f1da13ac4e122b88bc9310ab4855"
     },
     {
       "path": "scripts/import_local_workspace.py",

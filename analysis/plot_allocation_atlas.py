@@ -8,6 +8,8 @@ from matplotlib.colors import PowerNorm,TwoSlopeNorm
 from matplotlib.patches import Rectangle
 from scipy.stats import spearmanr
 from shapely.geometry import box
+from refined_primitives import signed_violin,overlap_ribbons
+from matplotlib.colors import ListedColormap,BoundaryNorm
 import redraw_figures as v
 import enhanced_analysis as e
 import cartography_style as c
@@ -85,32 +87,36 @@ def draw():
     j=axes(77,47,35,29)
     for z,col in [(prior,v.LILAC),(full,v.INK)]:
         j.plot(np.linspace(0,100,len(z)+1),np.r_[0,np.cumsum(np.sort(z))]/z.sum()*100,c=col,lw=1)
+    lx=np.linspace(0,100,len(full)+1);lp=np.r_[0,np.cumsum(np.sort(prior))]/prior.sum()*100;lf=np.r_[0,np.cumsum(np.sort(full))]/full.sum()*100
+    j.fill_between(lx,lp,lf,where=lf>=lp,color=v.TEAL,alpha=.21,lw=0)
+    j.fill_between(lx,lp,lf,where=lf<lp,color=v.LILAC,alpha=.21,lw=0)
     j.plot([0,100],[0,100],c='black',ls=':',lw=.6)
     j.set(xlabel='Cells, ascending (%)',ylabel='Cumulative share (%)',xlim=(0,100),ylim=(0,100),xticks=[0,50,100])
     label(j,'j','Lorenz concentration curves on the same allocation support')
     k=axes(137,47,35,29);cats=e.CATORDER
     values=[delta[e.D.function_class.eq(key)] for key in cats]
-    violin=k.violinplot(values,positions=range(5),orientation='horizontal',showextrema=False,widths=.72)
-    for body,key in zip(violin['bodies'],cats):body.set_facecolor(v.CAT[key][0]);body.set_alpha(.8);body.set_edgecolor('none')
-    for pos,z in enumerate(values):
-        q=np.quantile(z,[.25,.5,.75]);k.plot(q[[0,2]],[pos,pos],c='black',lw=.7);k.scatter(q[1],pos,s=9,c='black',zorder=4)
+    for pos,z in enumerate(values):signed_violin(k,z,pos,v.DIFF,width=.66)
     k.axvline(0,c='black',lw=.5,ls=':');k.set_yticks(range(5),['Mixed','Industrial','Low','Research','Transport'],fontsize=8.2)
     k.invert_yaxis();k.set_xlabel('Change (pp)');label(k,'k','Redistribution by functional category; median and IQR')
     l=axes(18,7,35,29);old=np.minimum((e.rp-1)//198,9);new=np.minimum((e.rf-1)//198,9)
     matrix=np.zeros((10,10),int);np.add.at(matrix,(old,new),1)
-    im=l.imshow(matrix/198*100,cmap=v.HEAT,vmin=0,vmax=100,origin='lower',aspect='auto')
+    migration_levels=[0,.5,5,15,30,50,75,100.001]
+    migration_cmap=ListedColormap(['#F3F4F0',*v.HEAT(np.linspace(0,1,6))])
+    im=l.imshow(matrix/198*100,cmap=migration_cmap,norm=BoundaryNorm(migration_levels,7),origin='lower',aspect='auto')
+    im._preserve_semantic_cmap=True
     l.set(xticks=[0,4,9],xticklabels=[1,5,10],yticks=[0,4,9],yticklabels=[1,5,10],xlabel='PGCAN rank decile',ylabel='Prior rank decile')
     cb=f.colorbar(im,cax=l.inset_axes([1.03,0,.055,1]),ticks=[0,50,100]);cb.outline.set_visible(False);cb.ax.tick_params(labelsize=8.2,length=1,pad=1)
     label(l,'l','Rank-migration matrix; percentages within each prior decile')
     m=axes(77,7,35,29);groups=[e.pm&e.fm,e.pm&~e.fm,~e.pm&e.fm]
     counts=[int(z.sum()) for z in groups]
-    m.bar(range(3),counts,color=[v.INK,v.CORAL,v.LILAC],width=.65)
-    m.set(xticks=range(3),xticklabels=['Both','Prior','PGCAN'],ylabel='Top-198 cells',ylim=(0,max(counts)*1.2))
-    for pos,n in enumerate(counts):m.text(pos,n+max(counts)*.025,str(n),ha='center',fontsize=8.2)
+    overlap_ribbons(m,counts[1],counts[0],counts[2],labels=('Prior','PGCAN'),compact=True)
     label(m,'m','Overlap of prior and mean-map top-198 cells; method-only sets exclude shared cells')
     n=axes(137,7,35,29);freq=np.bincount(e.freq,minlength=6)
-    n.bar(range(6),freq,color=[v.SEQ(t) for t in np.linspace(.08,.92,6)],width=.72)
-    n.set(xticks=range(6),xlabel='Seeds selecting a cell',ylabel='Cells',yscale='log',ylim=(.8,10000))
+    for xi,(count,colour) in enumerate(zip(freq,[v.SEQ(t) for t in np.linspace(.08,.92,6)])):
+        n.vlines(xi,1,max(count,1),color=colour,lw=1.6,alpha=.75)
+        n.scatter(xi,max(count,1),s=23,c=[colour],ec='white',lw=.5,zorder=3)
+        n.text(xi,max(count,1)*1.30,str(count),ha='center',fontsize=7)
+    n.set(xticks=range(6),xlabel='Seeds selecting a cell',ylabel='Cells',yscale='log',ylim=(.8,10000),xlim=(-.55,5.5))
     label(n,'n','Cell selection frequency in top-198 across five training seeds; logarithmic count axis')
     for ax in [i,j,k,m,n]:v.quiet(ax)
     pd.DataFrame({'prior_decile':np.repeat(np.arange(1,11),10),'mean_decile':np.tile(np.arange(1,11),10),
@@ -129,8 +135,8 @@ def draw():
         'Panels f–h use the exact same geographic window and the scales of their corresponding overview maps. '
         'The joint density uses 1,959 positive-prior cells; Spearman correlation uses all 1,980 cells. '
         'ECDFs and concentration curves retain every cell, including zero shares. Category violins show empirical distributions, with black median dots and interquartile intervals. '
-        'Rank migration uses deterministic grid-ID tie breaking and within-prior-decile percentages. The top-198 overlap bars report shared and method-only selections. '
+        'Rank migration uses deterministic grid-ID tie breaking and within-prior-decile percentages; the neutral first class represents zero (positive cells are at least 0.505%). The two set ribbons report shared and method-only Top-198 selections. '
         'Seed frequency counts all 1,980 cells across five original training seeds and uses a logarithmic count axis. '
-        'The map legend gives seed standard deviation with ddof=1; no confidence intervals or measured emissions accuracies are implied.')
+        'Signed violin gradients encode negative/pink and positive/green changes, with median/IQR marks. The map legend gives seed standard deviation with ddof=1; no confidence intervals or measured emissions accuracies are implied.')
 
 if __name__=='__main__':draw()

@@ -12,6 +12,7 @@ from matplotlib.ticker import LogLocator,NullFormatter
 from sklearn.metrics import precision_recall_curve,r2_score
 import redraw_figures as v
 from visual_polish import density_norm
+from refined_primitives import density_scatter
 
 P=v.HERE;E=P/'experiments';S=v.SD
 protocol=json.loads((E/'protocol.json').read_text());assert protocol['completed']
@@ -31,6 +32,8 @@ colors=dict(zip(names,['#47782B','#7CA554','#D796BB','#B84E8A','#BDCD8B','#679C4
 colors.update({k:('#B01572' if k.startswith('MR') else '#6B9C49') for k in labels if k not in colors})
 colors['Multi_relation']='#B01572';colors['No_graph']='#83AD59';colors['No_coordinate']='#DEAAC8'
 colors.update({'No_context_branch':'#B31B73','No_graph_penalty':'#D779AD','No_prior_anchor':'#A8005B'})
+colors.update({'MR_no_spatial':'#739A57','MR_no_function':'#B9518C','MR_no_built':'#A4BC78',
+    'MR_fixed_gate':'#D08BB0','MR_rewired':'#3E6947'})
 rc=v.grid.primary_count.to_numpy();cats=v.grid.function_class.to_numpy()
 xy=np.column_stack(v.Transformer.from_crs(4326,32651,always_xy=True).transform(cells.center_lon,cells.center_lat))
 gates=np.array([np.load(E/f'gates_Multi_relation_{seed}.npy') for seed in protocol['config']['seeds']])
@@ -81,19 +84,19 @@ def forest(ax,field,keys=names,log=False,reference=None):
 def curve(ax,x,label,color):
  z=np.sort(x);ax.step(z,np.arange(1,len(z)+1)/len(z),where='post',label=label,c=color,lw=1)
 def joint(ax,key):
- pred=mean(key);mask=(target>0)&(pred>0)
- x=np.log10(target[mask]*100);y=np.log10(pred[mask]*100)
- h=ax.hexbin(x,y,gridsize=50,mincnt=1,cmap=v.DENSITY,bins='log',linewidths=0)
- h.set_norm(density_norm(h.get_array()))
- maximum=float(h.get_array().max());cb=ax.figure.colorbar(h,cax=ax.inset_axes([1.02,.08,.035,.84]),ticks=[1,maximum])
- cb.set_ticklabels(['1',f'{maximum:g}']);cb.outline.set_visible(False);cb.ax.minorticks_off();cb.ax.tick_params(labelsize=6.2,length=1,pad=1)
- cb.set_label('Cells',fontsize=6.2,labelpad=1)
+ pred=mean(key);raw=load(key)*100;transform=lambda z:np.arcsinh(np.asarray(z)/.001)
+ xx=np.tile(target*100,len(raw));yy=raw.reshape(-1)
+ h,_,_=density_scatter(ax,transform(xx),transform(yy),v.DENSITY,size=3.1,alpha=.60)
+ cb=ax.figure.colorbar(h,cax=ax.inset_axes([1.025,0,.035,1]),ticks=[0,100])
+ cb.outline.set_visible(False);cb.ax.minorticks_off();cb.ax.tick_params(labelsize=6.2,length=1,pad=1)
+ cb.set_label('Density percentile (%)',fontsize=6.2,labelpad=1)
  cb.ax.yaxis.label.set_gid('map_colourbar_label')
  for t in cb.ax.get_yticklabels():t.set_gid('map_colourbar_label')
- lim=[-4.1,.1];ax.plot(lim,lim,ls='--',c=v.LILAC,lw=.7)
- ax.set(xlim=lim,ylim=lim,xlabel='Proxy target (log₁₀ %)',ylabel='OOF prediction (log₁₀ %)')
- ax.text(.03,.96,f'Pooled R² = {r2_score(target,pred):.3f}',transform=ax.transAxes,va='top',fontsize=6)
- ax.text(.03,.82,f'Positive target cells: {mask.sum():,}',transform=ax.transAxes,va='top',fontsize=5.7)
+ maximum=transform(max(xx.max(),yy.max())*1.05);ax.plot([0,maximum],[0,maximum],ls='--',c='#68716B',lw=.6,zorder=0)
+ ticks=np.array([0,.01,.1,.8]);locations=transform(ticks)
+ ax.set(xlim=(0,maximum),ylim=(0,maximum),aspect='equal',xlabel='Target share (%)',ylabel='OOF prediction (%)',xticks=locations,yticks=locations)
+ ax.set_xticklabels([f'{x:g}' for x in ticks]);ax.set_yticklabels([f'{x:g}' for x in ticks])
+ ax.text(.03,.97,f'R²(mean) = {r2_score(target,pred):.3f}',transform=ax.transAxes,va='top',fontsize=6)
 def coverage(ax,keys,scope='oof'):
  for key in keys:
   p=mean(key,scope);order=np.lexsort((cells.grid_id.to_numpy(str),-p));q=np.arange(.01,.501,.01)
@@ -108,8 +111,9 @@ def delta_map(ax,key,baseline='PGCAN',lim=.1):
 def benchmark_plate():
  f,axs=axes_grid('Model comparison under spatial separation','10 km blocks · 1 km exclusion buffer · five folds · three seeds for stochastic models')
  a=axs[0];cm=ListedColormap(['#517F32','#8DB860','#C5DCA2','#DEA3C4','#B12078'])
+ a.set_position([.055,.805,.265,.175])
  v.mapplot(a,cells.fold,BoundaryNorm(np.arange(.5,6),5),cm);title(a,'a','Fixed spatial test folds')
- a.legend(handles=[Patch(fc=cm(i),label=str(i+1)) for i in range(5)],loc='upper center',bbox_to_anchor=(.5,-.48),ncol=5,fontsize=6.8,handlelength=.7,columnspacing=.5,borderaxespad=0)
+ a.legend(handles=[Patch(fc=cm(i),label=str(i+1)) for i in range(5)],loc='upper center',bbox_to_anchor=(.5,-.18),ncol=5,fontsize=6.8,handlelength=.7,columnspacing=.5,borderaxespad=0)
  a=axs[1];q=pd.read_csv(S/'Benchmark_covariate_correlogram.csv')
  a.plot((q.distance_lower_m+500)/1000,q.ntl_standardized_product,c=v.INK,lw=1.1,marker='o',ms=2)
  a.axhline(0,c='#9BA58F',lw=.6);a.axvline(10,c=v.LILAC,ls='--',lw=.8)
@@ -158,8 +162,10 @@ def benchmark_plate():
  a=axs[14];forest(a,'elapsed_seconds',log=True);a.set_xlabel('Fit + selection time (s)');title(a,'o','Recorded CPU fitting cost')
  f._layout_clearance_pairs=[(cb.ax,axs[13]._left_title)]
  footer(f,'Intervals in d–e and o: observed fold/seed ranges; dots: means. Colours in f are scaled separately by metric.\nAll regression metrics evaluate a constructed proxy, not measured emissions. Site curves use 146 regulatory sites; no site labels enter training.')
+ f._density_encoding={'type':'KDE percentile','panels':['g','h','i'],'bandwidth':'Scott',
+  'point_positions':'Actual individual-seed OOF predictions, asinh(share_pct/0.001); no jitter'}
  v.save(f,'Figure_10',['Benchmark_fold_metrics.csv','Benchmark_direct_fold_metrics.csv','Benchmark_cell_manifest.csv','Benchmark_input_audit.csv','Benchmark_covariate_correlogram.csv','Benchmark_support_strata.csv','Benchmark_category_mae_pp.csv'],
-  'Fifteen-panel spatial benchmark. Direct-share baselines receive the declared prior and the same train-only neighbourhood covariates. Proxy RMSE/MAE/R2 use unrenormalized held-out predictions calibrated on training mass; OOF screening uses separately normalized maps. Error and timing ranges are actual fold/seed ranges. Spatial support is defined by held-out query-to-training distance tertiles. Category MAE uses one common linear colour scale; the exact nine-by-five values are supplied in Benchmark_category_mae_pp.csv instead of overlapping in-cell numbers. No measured emissions are available.')
+  'Fifteen-panel spatial benchmark. Direct-share baselines receive the declared prior and the same train-only neighbourhood covariates. Proxy RMSE/MAE/R2 use unrenormalized held-out predictions calibrated on training mass; OOF screening uses separately normalized maps. Panels g–i show all real seed-specific OOF predictions (one deterministic run for ridge), including zero targets, on asinh(percentage/0.001) axes labelled in raw percentages; colours are within-panel Scott-KDE density percentiles. Their R² values remain those of the seed-mean ensemble. Error and timing ranges are actual fold/seed ranges. Spatial support is defined by held-out query-to-training distance tertiles. Category MAE uses one common linear colour scale; the exact nine-by-five values are supplied in Benchmark_category_mae_pp.csv instead of overlapping in-cell numbers. No measured emissions are available.')
 
 def paired_difference(keys,field,baseline='PGCAN',scope='fold'):
  table=fold if scope=='fold' else maps[maps.scope.eq('full_domain_refit')]

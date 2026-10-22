@@ -36,8 +36,8 @@ def draw():
         assert values.ndim==2 and values.shape[1]==1980 and values.shape[0] in (1,3)
         assert np.isfinite(values).all() and (values>=0).all()
     means={key:values.mean(0) for key,values in predictions.items()}
-    transform=lambda value:np.arcsinh(value/.01)
-    upper=max(target.max(),max(a.max() for a in means.values()))*1.045
+    transform=lambda value:np.arcsinh(value/.001)
+    upper=max(target.max(),max(a.max() for a in predictions.values()))*1.045
     maximum=float(transform(upper));xt=transform(target)
     width,height=183,259
     fig=plt.figure(figsize=(width/25.4,height/25.4));fig._font_scale=1.
@@ -47,7 +47,9 @@ def draw():
     for index,(key,label) in enumerate(METHODS):
         row,col=divmod(index,3);left=12+58*col;bottom=208-48*row
         ax=axes(left,bottom,42,42)
-        prediction=means[key];yp=transform(prediction);sample=np.vstack([xt,yp])
+        prediction=means[key]
+        plotted_target=np.tile(target,len(predictions[key]));plotted_prediction=predictions[key].reshape(-1)
+        plotted_x=transform(plotted_target);yp=transform(plotted_prediction);sample=np.vstack([plotted_x,yp])
         # KDE changes colour only. Locations remain actual target/prediction
         # pairs, including zero targets. Covariance is not inflated or jittered.
         kde=gaussian_kde(sample,bw_method='scott');density=kde(sample)
@@ -56,8 +58,8 @@ def draw():
         percentile=(rankdata(np.round(np.log(density),10),method='average')-1)/(len(density)-1)*100
         assert np.isfinite(density).all() and (density>0).all()
         order=np.argsort(density,kind='stable')
-        artist=ax.scatter(xt[order],yp[order],c=percentile[order],cmap=v.DENSITY,
-            norm=Normalize(0,100),s=.95,lw=0,alpha=.80,rasterized=True)
+        artist=ax.scatter(plotted_x[order],yp[order],c=percentile[order],cmap=v.DENSITY,
+            norm=Normalize(0,100),s=3.2,lw=0,alpha=.58,rasterized=True)
         ax.plot([0,maximum],[0,maximum],c='#535353',lw=.55,ls=(0,(3,2)),zorder=0)
         ax.set(xlim=(0,maximum),ylim=(0,maximum),aspect='equal')
         for axis in [ax.xaxis,ax.yaxis]:
@@ -73,7 +75,7 @@ def draw():
         actual=[r2,rmse,mae]
         np.testing.assert_allclose(actual,old_metrics.loc[key,['pooled_oof_r2','pooled_oof_rmse_pp','pooled_oof_mae_pp']].to_numpy(float),rtol=1e-12,atol=1e-14)
         r2_display=f'{r2:.6f}'.rstrip('0').rstrip('.') if r2>.9999 else f'{r2:.4f}'
-        ax.text(.025,.975,f'R² = {r2_display}\nRMSE = {rmse:.3g} pp\nMAE = {mae:.3g} pp',
+        ax.text(.025,.975,f'R²(mean) = {r2_display}\nRMSE = {rmse:.3g} pp\nMAE = {mae:.3g} pp',
             transform=ax.transAxes,fontsize=8.2,va='top',ha='left',linespacing=1.12)
         cax=axes(left+44,bottom+3,1.25,36)
         cb=fig.colorbar(artist,cax=cax,orientation='vertical',ticks=[])
@@ -86,15 +88,18 @@ def draw():
         signed_error=prediction-target
         residual_records.append(pd.DataFrame({'method':key,'grid_id':cells.grid_id,
             'target_share_pct':target,'signed_residual_pp':signed_error}))
-        assert len(artist.get_offsets())==len(target)
+        assert len(artist.get_offsets())==len(predictions[key])*len(target)
         fig._panel_descriptions=getattr(fig,'_panel_descriptions',{})
         fig._panel_descriptions[string.ascii_lowercase[index]]=label
         metrics.append({'panel':string.ascii_lowercase[index],'method':key,'display_name':label,'n_cells':1980,
-            'n_training_seeds':len(predictions[key]),'pooled_oof_r2':r2,'pooled_oof_rmse_pp':rmse,
+            'n_training_seeds':len(predictions[key]),'n_rendered_predictions':len(plotted_target),'pooled_oof_r2':r2,'pooled_oof_rmse_pp':rmse,
             'pooled_oof_mae_pp':mae,'zero_target_cells':int((target==0).sum()),'excluded_cells':0})
         points.append(pd.DataFrame({'method':key,'grid_id':cells.grid_id,'fold':cells.fold,
             'target_share_pct':target,'mean_oof_prediction_pct':prediction}))
-        styling.append(pd.DataFrame({'method':key,'grid_id':cells.grid_id,'kde_density':density,'density_percentile':percentile}))
+        styling.append(pd.DataFrame({'method':key,'grid_id':np.tile(cells.grid_id,len(predictions[key])),
+            'seed_index':np.repeat(np.arange(len(predictions[key])),len(target)),
+            'target_share_pct':plotted_target,'oof_prediction_pct':plotted_prediction,
+            'kde_density':density,'density_percentile':percentile}))
         ecdf_records.append(pd.DataFrame({'method':key,'order':np.arange(len(target)),
             'absolute_error_pp':sorted_error,'cumulative_fraction':fraction}))
         kde_checks.append({'method':key,'n_plotted':len(artist.get_offsets()),'kde_bandwidth_rule':'Scott',
@@ -108,7 +113,10 @@ def draw():
         'metrics_location':'upper left inside each scatter','one_scatter_per_model':True,
         'repeated_inner_tick_labels_suppressed':True,'no_global_title':True}
     fig._density_encoding={'type':'KDE percentile','unit':'within-panel density percentile (%)','bandwidth':'Scott',
-        'point_positions':'Unmodified asinh(share_pct/0.01)','all_cells_retained':1980,'colourbar_ticks':[0,100],
+        'point_positions':'Actual individual-seed OOF predictions, asinh(share_pct/0.001)',
+        'metrics_aggregation':'Unchanged seed-mean ensemble on original percentage shares',
+        'rendered_predictions':sum(len(a)*1980 for a in predictions.values()),
+        'all_cells_retained':1980,'colourbar_ticks':[0,100],
         'numeric_ties':'Natural-log density rounded to 10 decimals before average-rank assignment'}
     pd.DataFrame(metrics).to_csv(S/'Benchmark_prediction_density_metrics.csv',index=False)
     pd.concat(points,ignore_index=True).to_csv(S/'Benchmark_prediction_density_points.csv',index=False)
@@ -117,10 +125,10 @@ def draw():
     pd.concat(residual_records,ignore_index=True).to_csv(S/'Benchmark_prediction_signed_residuals.csv',index=False)
     caption=('Spatially held-out predictions for fifteen model configurations. '
         'The first row contrasts PGCAN, the multi-relation candidate and ridge; rows two and three contain remaining classical baselines, and rows four and five contain six graph/branch controls. '
-        'Every scatter shows all 1,980 actual cells, including six zero targets; no points are sampled, jittered or moved. Stochastic methods use the mean of three matched-seed out-of-fold predictions and deterministic methods one run. '
-        'Scatter positions use identical axes with asinh(share in percent/0.01); tick labels show original percentage shares. The dashed diagonal denotes equality. '
+        'Every scatter includes all 1,980 actual cells, including six zero targets, once for each saved training seed: three real OOF predictions per cell for stochastic methods and one for deterministic methods. No points are sampled, jittered or moved. Multiple seed marks are repeated predictions of the same cells, not independent spatial observations. '
+        'Scatter positions use identical axes with asinh(share in percent/0.001); tick labels show original percentage shares. The smaller linear core expands the low-value region. Larger translucent marks reveal the real seed-specific cloud; the dashed diagonal denotes equality. '
         'Colour is the within-panel percentile of a bivariate Gaussian kernel-density estimate in display coordinates, with Scott bandwidth: green sparse exterior to pink dense core. Each panel has a vertical 0–100 density-percentile colourbar. These are density ranks, not cell counts, signed errors or comparable absolute density magnitudes. '
-        'The upper-left corner of each scatter reports R², RMSE and MAE from untransformed percentage shares; errors are percentage points (pp). Values above 0.9999 use six decimal places to distinguish near-exact from perfect reconstruction. Each model has exactly one scatter panel; no duplicate residual plot is included. '
+        'The upper-left corner of each scatter reports the unchanged seed-mean ensemble R², RMSE and MAE from untransformed percentage shares; errors are percentage points (pp). The mean is used for metrics, while individual real seed predictions are plotted. Values above 0.9999 use six decimal places to distinguish near-exact from perfect reconstruction. Each model has exactly one scatter panel; no duplicate residual plot is included. '
         'Five spatial folds use 10 km blocks and a 1 km centroid buffer. Held-out shares retain training-mass calibration and are not renormalized against test targets. '
         'Targets are deterministic constructed proxies rather than measured emissions. All metrics and unfavourable comparisons are retained unchanged; these panels quantify proxy reconstruction only.')
     v.save(fig,'Figure_13',['Benchmark_cell_manifest.csv','Benchmark_prediction_density_metrics.csv',
