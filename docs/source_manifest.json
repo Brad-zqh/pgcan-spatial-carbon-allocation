@@ -23,15 +23,15 @@
   {
     "source": "enhanced_analysis.py",
     "released": "analysis/enhanced_analysis.py",
-    "original_sha256": "1af5698369fb33ab479fe1547fa25ac16d7f8c0768643eb527667ca01c367fc2",
-    "released_sha256": "a755416488c916f5524c822687847bd5ad8c0e532400722c7e422ee1b59027a8",
+    "original_sha256": "6360c4c1273bc16a0c1ae7bfdf7ba46d94261531a1cc9d056a3907c07e448238",
+    "released_sha256": "8a4dbb4a5848e5491014ebde25f00e302c2977f9891516d11d4870aeb2014b60",
     "adaptation": "Data-root configuration/import and optional font discovery only; equations unchanged"
   },
   {
     "source": "redraw_figures.py",
     "released": "analysis/redraw_figures.py",
-    "original_sha256": "857f868f9352d9f4bb57183af29e98fec24e63deffe68494cc9f359daf0b2d79",
-    "released_sha256": "10e1e085ad9cfffef50855ec71f4d5ced0bed0c09cf47b3c98e105920eca50e1",
+    "original_sha256": "6bcf4da79433a019a093281fee82eda92ff4253c50b80587d2f44b46314288d4",
+    "released_sha256": "70be0b4e76c7cebd02d880be56a25479d895d35c6a0400c7f7c8a54cd29a5f01",
     "adaptation": "Data-root configuration/import and optional font discovery only; equations unchanged"
   },
   {
@@ -44,8 +44,8 @@
   {
     "source": "plot_benchmark_results.py",
     "released": "analysis/plot_benchmark_results.py",
-    "original_sha256": "3081c71e0eb104a146c6db87faab0379ba7a395c9549d58e68d313d38235c45d",
-    "released_sha256": "09d280474d8183cf9b1fa6e843a08d72cee80b889ed56bc85a30df76bd995915",
+    "original_sha256": "e84024daf2ebf85dd844ee6dd2c10ab0b9401ef0ec6f174b1c950e7381d52ff6",
+    "released_sha256": "f9a4fee9fd1ec4f72f5a60517d5274074dff1e7f3dc30cedcb3025e6a3d48353",
     "adaptation": "Data-root configuration/import and optional font discovery only; equations unchanged"
   },
   {
@@ -58,8 +58,8 @@
   {
     "source": "plot_error_diagnostics.py",
     "released": "analysis/plot_error_diagnostics.py",
-    "original_sha256": "f25e31ea96407a7450d5faf2fc255575267bcd747e24b3be6bd47f82a1aee8de",
-    "released_sha256": "f127af5f8641f9a7bf2bf1b0697bce0cfaef15e27271ee7fbcdefad9f1869a24",
+    "original_sha256": "86f2ce8689d726feaf4e522d92d0aee89147415d2f467558fb913a028979aad5",
+    "released_sha256": "fae3d8ff7ef3b6cd2484207788e9542f57592e80a92b744bf909d2c2bcbdf386",
     "adaptation": "Data-root configuration/import and optional font discovery only; equations unchanged"
   },
   {
@@ -86,15 +86,22 @@
   {
     "source": "map_classification.py",
     "released": "analysis/map_classification.py",
-    "original_sha256": "3dbaa2ffe9d60f6d4b47d58ccab2fc6401f1e3f50c8a8edb6e08869a2f340fa4",
-    "released_sha256": "742607390acb0d625475bd40df9d2fcfd9d7c90a9d4db23a568d1a23ffd56200",
+    "original_sha256": "780326dd12be57808d44027b88639adc0cd31a4894eba43cab39766509be6a5e",
+    "released_sha256": "0da534a9d4b416c66aa1127c399c74907e90614bc2d9f7d0b5f17171264bb449",
     "adaptation": "Data-root configuration/import and optional font discovery only; equations unchanged"
   },
   {
     "source": "visual_polish.py",
     "released": "analysis/visual_polish.py",
-    "original_sha256": "d1aa23546fa913c0ea614fb846dd5da6a863b982227fbf0a6c3f5fc5cb038ab5",
-    "released_sha256": "3fb0776efe560ccc5b28e41940c3b0d2c6e4a49671e5ed0da68fcfbd96c42eb7",
+    "original_sha256": "07e80aab3c47645b34f13a45d7b969bb0e98bb8066c48a96b9e02a96e9d08f99",
+    "released_sha256": "9429b0315ca19ff169ca9346d1688abec1dff6f1f660502470bbbfb9c0c248b2",
+    "adaptation": "Data-root configuration/import and optional font discovery only; equations unchanged"
+  },
+  {
+    "source": "figure_finish.py",
+    "released": "analysis/figure_finish.py",
+    "original_sha256": "35d5481f1eb4f65b496cf9ec574b7eb3acca40a63b53e64c99cb568179d425dd",
+    "released_sha256": "1616c38a4076f415fb298c990402832c302b7fb29d36af8dbdb3b170b2098f4a",
     "adaptation": "Data-root configuration/import and optional font discovery only; equations unchanged"
   },
   {

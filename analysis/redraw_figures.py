@@ -31,6 +31,7 @@ from pyproj import Transformer
 import cartography_style as carto
 import map_classification as mc
 from visual_polish import complete_heatmap_legends
+from figure_finish import compact_rows
 
 ROOT = Path(os.environ.get('PGCAN_PROJECT_ROOT',HERE.parent/'data/local/project'))
 WORK = ROOT / 'submission_revision_20260922'
@@ -212,6 +213,7 @@ def save(fig,name,source,caption):
         artist.set_color('#000000')
         if artist.get_text() and artist.get_gid() not in ['map_coordinate_label','map_north_label','map_scale_label','map_colourbar_label','compact_diagnostic_label']:
             artist.set_fontsize(max(8.2,min(14,artist.get_fontsize()*getattr(fig,'_font_scale',1.20))))
+    compactness=compact_rows(fig,name)
     fig.canvas.draw()
     north_checks=[];coordinate_checks=[];coordinate_neighbour_checks=[]
     renderer=fig.canvas.get_renderer()
@@ -256,10 +258,13 @@ def save(fig,name,source,caption):
     # Check all actual matplotlib text objects, including math labels.
     families={tuple(t.get_fontfamily()) for t in fig.findobj(mpl.text.Text) if t.get_text()}
     assert families=={(FONT,)}, (name,families)
-    for ext in ['pdf','svg','png','tiff']:
+    for ext in ['pdf','svg','png']:
         kw={'dpi':600,'bbox_inches':'tight','pad_inches':.035}
-        if ext=='tiff':kw['pil_kwargs']={'compression':'tiff_lzw'}
         fig.savefig(OUT/f'{name}.{ext}',**kw)
+    # Lossless TIFF uses the same 600 dpi pixels; avoid rendering the identical
+    # complex map a second time just to change its raster container.
+    with Image.open(OUT/f'{name}.png') as raster:
+        raster.save(OUT/f'{name}.tiff',dpi=(600,600),compression='tiff_lzw')
     fig.savefig(QA/f'{name}.png',dpi=180,bbox_inches='tight',pad_inches=.035)
     bbox=fig.get_tightbbox(fig.canvas.get_renderer())
     (OUT/f'{name}_caption.txt').write_text(caption,encoding='utf-8')
@@ -277,6 +282,7 @@ def save(fig,name,source,caption):
                          if getattr(fig,'_density_encoding',{}).get('type')=='KDE percentile' else
                          'Pink - pale neutral - green; density: green low counts to pink high counts'),
                      'layout':getattr(fig,'_layout',None)})
+    manifest[-1]['compactness']=compactness
     plt.close(fig)
     print('Saved',name,flush=True)
 
@@ -551,7 +557,7 @@ def fig5():
                 r=pair[((pair['first']==k)&(pair.second==l))|((pair['first']==l)&(pair.second==k))].iloc[0]
                 mat[i,j]=r.jaccard
     f=plt.figure(figsize=(WIDTH,4.25));a=f.add_axes([.075,.26,.365,.61]);b=f.add_axes([.69,.26,.275,.61])
-    a.imshow(mat,cmap=SEQ,vmin=0,vmax=1)
+    image=a.imshow(mat,cmap=SEQ,vmin=0,vmax=1)
     for i in range(7):
         for j in range(7):
             a.text(j,i,f'{mat[i,j]:.2f}',ha='center',va='center',fontsize=7,
@@ -563,7 +569,7 @@ def fig5():
     # Outline PGCAN comparisons without changing matrix values.
     a.add_patch(Rectangle((-.5,3.5),7,1,fill=False,ec=INK,lw=.8))
     panel(a,'a','Top-198 spatial overlap')
-    cb=f.colorbar(mpl.cm.ScalarMappable(norm=Normalize(0,1),cmap=SEQ),cax=f.add_axes([.12,.17,.275,.025]),orientation='horizontal')
+    cb=f.colorbar(image,cax=f.add_axes([.12,.17,.275,.025]),orientation='horizontal')
     cb.outline.set_visible(False);cb.set_label('Jaccard overlap',fontsize=7,labelpad=2);cb.ax.tick_params(labelsize=6.5,length=2)
     others=[k for k in keys if k!='Full']
     b.axvline(0,c='#9AABB3',lw=.7,ls='--')

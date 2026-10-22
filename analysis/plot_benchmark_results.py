@@ -87,6 +87,8 @@ def joint(ax,key):
  h.set_norm(density_norm(h.get_array()))
  maximum=float(h.get_array().max());cb=ax.figure.colorbar(h,cax=ax.inset_axes([1.02,.08,.035,.84]),ticks=[1,maximum])
  cb.set_ticklabels(['1',f'{maximum:g}']);cb.outline.set_visible(False);cb.ax.minorticks_off();cb.ax.tick_params(labelsize=6.2,length=1,pad=1)
+ cb.set_label('Cells',fontsize=6.2,labelpad=1)
+ cb.ax.yaxis.label.set_gid('map_colourbar_label')
  for t in cb.ax.get_yticklabels():t.set_gid('map_colourbar_label')
  lim=[-4.1,.1];ax.plot(lim,lim,ls='--',c=v.LILAC,lw=.7)
  ax.set(xlim=lim,ylim=lim,xlabel='Proxy target (log₁₀ %)',ylabel='OOF prediction (log₁₀ %)')
@@ -281,7 +283,7 @@ def graph_plate():
  a.imshow(jac,cmap=v.SEQ,vmin=0,vmax=1);a._heatmap_units='Jaccard'
  for i in range(3):
   for j in range(3):a.text(j,i,f'{jac[i,j]:.3f}',ha='center',va='center',fontsize=7,color='white' if jac[i,j]>.6 else v.INK)
- a.set_xticks(range(3),['Space','Function','Built'],fontsize=6.8);a.set_yticks(range(3),['Space','Function','Built'],fontsize=6);a.tick_params(length=0);title(a,'d','Relation-edge Jaccard overlap')
+ a.set_xticks(range(3),['Space','Func.','Built'],fontsize=6.8,rotation=30,ha='right');a.set_yticks(range(3),['Space','Function','Built'],fontsize=6);a.tick_params(length=0);title(a,'d','Relation-edge Jaccard overlap')
  a=axs[4]
  for g,col,label in zip(graphs,RELC,REL):curve(a,np.linalg.norm(xy[g['row']]-xy[g['col']],axis=1)/1000,label,col)
  a.set(xlabel='Geographic edge length (km)',ylabel='Cumulative directed edges');a.legend(fontsize=5.5,loc='lower right',handlelength=1);title(a,'e','How far each relation reaches')
@@ -295,7 +297,10 @@ def graph_plate():
  cax=axs[7].inset_axes([.04,-.25,.92,.07]);cb=f.colorbar(v.mpl.cm.ScalarMappable(norm=Normalize(0,1),cmap=v.SEQ),cax=cax,orientation='horizontal',ticks=[0,.5,1]);cb.outline.set_visible(False)
  cb.ax.tick_params(labelsize=6,length=1.5);cb.set_label('Mean learned gate across three full-domain refits',fontsize=6,labelpad=1)
  a=axs[9];order=['industrial','mixed','low_activity','research','transport_built'];val=np.array([G[cats==k].mean(0) for k in order])
- a.imshow(val,cmap=v.SEQ,vmin=0,vmax=1,aspect='auto');a._heatmap_units='Mean gate'
+ gate_norm=TwoSlopeNorm(vcenter=1/3,vmin=.25,vmax=.45)
+ a.imshow(val,cmap=v.SEQ,norm=gate_norm,aspect='auto');a._heatmap_units='Mean gate'
+ a._heatmap_ticks=[.25,1/3,.45]
+ a._heatmap_ticklabels=['0.25','1/3','0.45']
  for i in range(5):
   for j in range(3):a.text(j,i,f'{val[i,j]:.2f}',ha='center',va='center',fontsize=6.6,color='white' if val[i,j]>.65 else v.INK)
  a.set_yticks(range(5),[v.CAT[k][1] for k in order],fontsize=5.8);a.set_xticks(range(3),['Space','Function','Built'],fontsize=6);a.tick_params(length=0);title(a,'j','Gate allocation by category')
@@ -321,7 +326,7 @@ def graph_plate():
  a.set_yticks(range(len(keys)),[labels[k] for k in keys],fontsize=5.8);a.invert_yaxis();a.set_xlabel('Regulatory coverage: refit maps (%)');title(a,'o','Do semantic edges aid screening?')
  footer(f,'Edges in a–c: fixed random sample of 260 per relation; all edges enter audits. Relations use covariates and geometry, never benchmark labels.\nGates describe fitted computation, not causal importance or measured energy flows. Rewiring preserves each query’s edge count and weight multiset.')
  v.save(f,'Figure_12',['Benchmark_relation_audit.csv','Benchmark_relation_jaccard.csv','Benchmark_fold_metrics.csv','Benchmark_map_metrics.csv'],
-  'Fifteen-panel multi-relation graph audit. Up to eight neighbours are selected from the nearest 65 feature-space candidates within 10 km, with spatial fallback when none qualifies; the spatial relation uses distance 8NN. All training message sources are training nodes. Final full-domain graph structures and mean gates are described separately from held-out performance. This is a homogeneous grid-node multi-relation graph, not a building-street heterogeneous graph or an observed industrial-flow network.')
+  'Fifteen-panel multi-relation graph audit. Up to eight neighbours are selected from the nearest 65 feature-space candidates within 10 km, with spatial fallback when none qualifies; the spatial relation uses distance 8NN. All training message sources are training nodes. Final full-domain graph structures and mean gates are described separately from held-out performance. In j, raw category mean gates are coloured on 0.25–0.45 with a neutral midpoint at the equal-gate reference 1/3; below/above this reference are pink/green. Func. abbreviates Function. This is a homogeneous grid-node multi-relation graph, not a building-street heterogeneous graph or an observed industrial-flow network.')
  pd.DataFrame({'grid_id':cells.grid_id,'spatial_gate':G[:,0],'function_gate':G[:,1],'built_gate':G[:,2],
   'normalized_gate_entropy':entropy,'largest_gate':G.argmax(1)}).to_csv(S/'Benchmark_relation_gates.csv',index=False)
 

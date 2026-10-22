@@ -47,6 +47,10 @@ def complete_heatmap_legends(fig):
                     cb.ax.xaxis.set_ticks_position('top')
                 else:cb.set_ticks(np.linspace(im.norm.vmin,im.norm.vmax,3))
             tag_small_text(cb)
+            if getattr(ax,'_heatmap_ticks',None) is not None:
+                cb.set_ticks(ax._heatmap_ticks)
+                if getattr(ax,'_heatmap_ticklabels',None) is not None:cb.set_ticklabels(ax._heatmap_ticklabels)
+                tag_small_text(cb)
             records.append({'shape':list(array.shape),'units':cb.ax.xaxis.label.get_text() or cb.ax.yaxis.label.get_text(),
                             'limits':[float(im.norm.vmin),float(im.norm.vmax)],'has_colourbar':True})
     return records

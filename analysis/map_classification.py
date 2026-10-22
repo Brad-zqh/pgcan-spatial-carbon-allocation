@@ -48,7 +48,14 @@ def add_bar(fig,ax,norm,cm,ticks,label,description):
     import matplotlib as mpl
     cax=ax.inset_axes([.13,-.14,.78,.045]);cax._individual_map_bar=True
     cb=fig.colorbar(mpl.cm.ScalarMappable(norm=norm,cmap=cm),cax=cax,orientation='horizontal',ticks=ticks,spacing='uniform')
-    cb.set_ticklabels([format_tick(float(x),float(norm.vmax-norm.vmin)) for x in ticks])
+    labels=[format_tick(float(x),float(norm.vmax-norm.vmin)) for x in ticks]
+    # A narrow entropy/gate range may otherwise print both median and maximum
+    # as "1". Increase precision until distinct numeric ticks remain distinct.
+    for digits in range(3,9):
+        if len(set(labels))==len(ticks):break
+        labels=[f'{float(x):.{digits}f}'.rstrip('0').rstrip('.') if x else '0' for x in ticks]
+    assert len(set(labels))==len(ticks),(label,ticks,labels)
+    cb.set_ticklabels(labels)
     cb.outline.set_visible(False);cb.ax.tick_params(length=2,pad=1,labelsize=6.5)
     cb.set_label(label,fontsize=6.5,labelpad=1.5)
     for text in [*cb.ax.get_xticklabels(),cb.ax.xaxis.label]:text.set_gid('map_colourbar_label')

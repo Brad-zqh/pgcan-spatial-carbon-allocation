@@ -136,10 +136,10 @@ def enriched_main4():
         m=topflag(D[k+'_share']);reg=D.primary_count.to_numpy()[m].sum()/146*100;en=ec[m].sum()/69*100
         d.plot([reg,en],[i,i],c='#C7D3D9',lw=1.1)
         d.scatter(reg,i,c=v.INK,s=19,ec='white',lw=.3,zorder=3)
-        d.scatter(en,i,c=v.GOLD,s=19,marker='s',ec='white',lw=.3,zorder=3)
+        d.scatter(en,i,c=v.LILAC,s=19,marker='s',ec='white',lw=.3,zorder=3)
     d.set_yticks(range(7),[v.LABEL[k] for k in METHODS],fontsize=6.8);d.invert_yaxis();d.set(xlim=(20,65),xlabel='Fixed-map site coverage (%)')
     d.tick_params(axis='y',length=0);d.spines['left'].set_visible(False);v.quiet(d,'x');v.panel(d,'d','Two location cohorts',title_x=-.65)
-    d.legend(handles=[Line2D([],[],c=v.INK,marker='o',lw=0,label='Regulatory (146)'),Line2D([],[],c=v.GOLD,marker='s',lw=0,label='Energy-user (69)')],
+    d.legend(handles=[Line2D([],[],c=v.INK,marker='o',lw=0,label='Regulatory (146)'),Line2D([],[],c=v.LILAC,marker='s',lw=0,label='Energy-user (69)')],
              loc='upper center',bbox_to_anchor=(.1,-.24),ncol=2,fontsize=6.4,handlelength=1,columnspacing=.8)
     f.legend(*a.get_legend_handles_labels(),loc='lower left',bbox_to_anchor=(.07,.04),ncol=3,fontsize=6.5,handlelength=1.5,columnspacing=.8)
     v.foot(f,'Curves / cohort dots: fixed mean maps; panel b: per-run mean ± seed SD | The two cohorts share 59 sites and POI geolocation')
@@ -166,7 +166,7 @@ def input_structure():
     z=np.log1p(X[FEATURES].to_numpy(float));z=(z-z.mean(0))/z.std(0)
     vp=b.violinplot([z[:,i] for i in range(9)],positions=np.arange(9),orientation='horizontal',widths=.8,showextrema=False)
     for i,body in enumerate(vp['bodies']):
-        body.set_facecolor([v.TEAL,v.INK,v.GOLD][i//3]);body.set_alpha(.65);body.set_edgecolor('white');body.set_linewidth(.4)
+        body.set_facecolor([v.TEAL,v.LILAC,v.GOLD][i%3]);body.set_alpha(.65);body.set_edgecolor('white');body.set_linewidth(.4)
     q=np.percentile(z,[25,50,75],axis=0)
     b.hlines(np.arange(9),q[0],q[2],color=v.INK,lw=1.3);b.scatter(q[1],np.arange(9),s=10,c='white',edgecolor=v.INK,lw=.5,zorder=3)
     b.set_yticks(range(9),FLABEL,fontsize=6.5);b.invert_yaxis();b.set_xlim(-2.7,9.5);b.axvline(0,c='#B8C6CC',ls=':',lw=.6)
@@ -229,11 +229,15 @@ def seed_stability():
     cols=[v.mpl.colors.to_hex(v.SEQ(t)) for t in np.linspace(0,1,6)];cm=ListedColormap(cols);norm=BoundaryNorm(np.arange(-.5,6.5),6)
     v.mapplot(a,freq,norm,cm);v.panel(a,'a','Hotspot selection frequency across five seeds')
     v.colorbar(f,a,cm,norm,'Times selected in the Top-198 cells',[0,1,2,3,4,5])
-    jac=np.array([[(s&t).sum()/(s|t).sum() for t in select] for s in select]);im=b.imshow(jac,cmap=v.SEQ,vmin=.9,vmax=1)
+    jac=np.array([[(s&t).sum()/(s|t).sum() for t in select] for s in select])
+    jac_min=np.floor(jac.min()*1000)/1000
+    im=b.imshow(jac,cmap=v.SEQ,vmin=jac_min,vmax=1)
     for i in range(5):
         for j in range(5):b.text(j,i,f'{jac[i,j]:.3f}',ha='center',va='center',fontsize=6.7,color='white' if jac[i,j]>.95 else v.INK)
     b.set_xticks(range(5),[f'S{i+1}' for i in range(5)]);b.set_yticks(range(5),[f'S{i+1}' for i in range(5)]);b.tick_params(length=0);v.panel(b,'b','Seed-to-seed Top-198 Jaccard')
-    cb=f.colorbar(im,cax=b.inset_axes([1.04,0,.045,1]),ticks=[.9,.95,1]);cb.outline.set_visible(False);cb.ax.tick_params(labelsize=6,length=2)
+    cb=f.colorbar(im,cax=b.inset_axes([1.04,0,.045,1]),ticks=[jac_min,(1+jac_min)/2,1]);cb.outline.set_visible(False);cb.ax.tick_params(labelsize=6,length=2)
+    cb.ax.set_yticklabels([f'{x:.3f}' for x in [jac_min,(1+jac_min)/2,1]])
+    cb.set_label('Jaccard',fontsize=6.5,labelpad=2)
     c=f.add_axes([.09,.16,.345,.26]);d=f.add_axes([.635,.16,.31,.26])
     n=np.bincount(freq,minlength=6);c.bar(range(6),n,color=cols,edgecolor='#73929B',lw=.45,width=.64);c.set_yscale('log');c.set(xticks=range(6),xlabel='Number of seeds selecting a cell',ylabel='Number of cells (log scale)',ylim=(.8,4000))
     for i,count in enumerate(n):c.text(i,count*1.17,f'{count:,}',ha='center',fontsize=7)
@@ -241,7 +245,7 @@ def seed_stability():
     v.panel(c,'c','Core and boundary selections');v.quiet(c)
     reg=np.array([D.primary_count.to_numpy()[s].sum()/146*100 for s in select]);eng=np.array([ec[s].sum()/69*100 for s in select]);xx=np.arange(5)
     d.plot(xx,reg,'o-',c=v.INK,lw=1.1,ms=4,mec='white',mew=.4,label='Regulatory (146)')
-    d.plot(xx,eng,'s-',c=v.GOLD,lw=1.1,ms=4,mec='white',mew=.4,label='Energy-user (69)')
+    d.plot(xx,eng,'s-',c=v.LILAC,lw=1.1,ms=4,mec='white',mew=.4,label='Energy-user (69)')
     d.set(xticks=xx,xticklabels=[f'S{i+1}' for i in range(5)],xlabel='Training seed',ylabel='Top-10% site coverage (%)');tickstyle(d)
     d.legend(loc='upper center',bbox_to_anchor=(.5,-.24),ncol=2,fontsize=6.5,handlelength=1.2,columnspacing=.8)
     v.panel(d,'d','Screening variability across seeds')
@@ -250,7 +254,7 @@ def seed_stability():
     pd.DataFrame(jac,index=SEEDS,columns=SEEDS).to_csv(SD/'Analysis_seed_jaccard.csv')
     pd.DataFrame({'seed':SEEDS,'regulatory_coverage_pct':reg,'energy_coverage_pct':eng}).to_csv(SD/'Analysis_seed_cohort_coverage.csv',index=False)
     v.save(f,'Figure_S6',['probabilities_Full.npy','Analysis_seed_selection_frequency.csv','Analysis_seed_jaccard.csv','Analysis_seed_cohort_coverage.csv'],
-           'Seed stability: spatial selection frequency, pairwise Top-198 Jaccard, frequency counts and cohort coverage across the five recorded seeds. Site lists share geolocation; stability does not quantify emissions uncertainty.')
+           'Seed stability: spatial selection frequency, pairwise Top-198 Jaccard, frequency counts and cohort coverage across the five recorded seeds. The Jaccard colour scale spans the observed lower bound (rounded down to three decimals) to 1; printed cell labels retain the raw overlaps. Site lists share geolocation; stability does not quantify emissions uncertainty.')
 
 def benchmark_profiles():
     keys=METHODS;metrics=['primary_coverage','primary_rho','primary_ap','primary_auc','top10_mass_share']

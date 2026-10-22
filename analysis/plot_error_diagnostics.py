@@ -72,6 +72,7 @@ def draw():
         c.set(xlim=(0,upper),ylim=(0,upper),xticks=ticks,yticks=ticks)
         c.set_xticklabels([f'{z:g}' for z in ticks],fontsize=7)
         c.set_yticklabels([f'{z:g}' for z in ticks],fontsize=7)
+        if j>0:c.tick_params(labelleft=False)
         c.set_xlabel('Mean target (%)',fontsize=7.5)
         if j==0:c.set_ylabel('Mean prediction (%)',fontsize=7.5)
         label(c,string.ascii_lowercase[8+j],name+': target-decile calibration and within-decile IQR')
@@ -87,8 +88,11 @@ def draw():
     for h in hexes:h.set_norm(LogNorm(1,float(h.get_array().max())))
     for a,h in zip(hex_axes,hexes):
         localmax=float(h.get_array().max())
-        cb=f.colorbar(h,cax=a.inset_axes([1.03,.08,.035,.84]),ticks=[1,localmax])
+        cb=f.colorbar(h,cax=a.inset_axes([1.015,.08,.028,.84]),ticks=[1,localmax])
         cb.set_ticklabels(['1',f'{localmax:g}'])
+        unit=cb.ax.text(.5,1.045,'Cells',transform=cb.ax.transAxes,
+            ha='center',va='bottom',fontsize=6.2)
+        unit.set_gid('map_colourbar_label')
         cb.outline.set_visible(False);cb.ax.minorticks_off();cb.ax.tick_params(labelsize=6.2,length=1,pad=1)
         for text in cb.ax.get_yticklabels():text.set_gid('map_colourbar_label')
     pd.concat(point_records,ignore_index=True).to_csv(v.SD/'Analysis_oof_error_cells.csv',index=False)
