@@ -30,8 +30,8 @@
   {
     "source": "redraw_figures.py",
     "released": "analysis/redraw_figures.py",
-    "original_sha256": "1b60cd7b7d545200572cae0618789a4e969984a95ea7bd1c64ad1ed462e75135",
-    "released_sha256": "359960d5da7afdd69ead3780c0c9927c811b2ac9febecf378381bfc7b4260067",
+    "original_sha256": "b324e649fd50318ae7c300a2efeac3574b938f9e788275e72d1f4b582da6d786",
+    "released_sha256": "2658e2193419f079f34811732be9312aaa3acb26a5dd75c3a2832b5edd43f0fc",
     "adaptation": "Data-root configuration/import and optional font discovery only; equations unchanged"
   },
   {
@@ -128,8 +128,8 @@
   {
     "source": "refine_palette_and_maps.py",
     "released": "analysis/refine_palette_and_maps.py",
-    "original_sha256": "548bad5f7f26e737c92d65aae25c9e4046df0aab2f5e918a8e45fcc9b3c4d785",
-    "released_sha256": "25e9bfff22da37c6c254644193ad06770a43d2e90517860ab25cf31f581347f6",
+    "original_sha256": "d54afb7abb5c9c0020184b023c4b49b16de2381964cee972ac05ff94d422f778",
+    "released_sha256": "787d2df9ae5add1f9237af099c671c5051f579adda43eeb7c6bf85561a5e943e",
     "adaptation": "Data-root configuration/import and optional font discovery only; equations unchanged"
   },
   {

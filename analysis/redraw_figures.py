@@ -273,9 +273,15 @@ def save(fig,name,source,caption):
         raster.save(OUT/f'{name}.tiff',dpi=(600,600),compression='tiff_lzw')
     fig.savefig(QA/f'{name}.png',dpi=180,bbox_inches='tight',pad_inches=.035,bbox_extra_artists=export_extra)
     bbox=fig.get_tightbbox(fig.canvas.get_renderer(),bbox_extra_artists=export_extra)
+    import fitz
+    with fitz.open(OUT/f'{name}.pdf') as exported:
+        export_width=exported[0].rect.width/72*25.4
+        export_height=exported[0].rect.height/72*25.4
     (OUT/f'{name}_caption.txt').write_text(caption,encoding='utf-8')
     manifest.append({'figure':name,'source_data':source,'caption':caption,
-                     'width_mm':round((bbox.width+.07)*25.4,2),'height_mm':round((bbox.height+.07)*25.4,2),
+                     'width_mm':round(export_width,3),'height_mm':round(export_height,3),
+                     'dimension_basis':'Actual exported PDF MediaBox; raster glyph metrics can differ slightly',
+                     'agg_tight_extent_mm':[round((bbox.width+.07)*25.4,2),round((bbox.height+.07)*25.4,2)],
                      'font':FONT,'dpi':600,'global_title_inside_image':False,'notes_location':'external manuscript caption',
                      'caption_notes':notes,'panel_descriptions':panel_descriptions,'north_arrow_checks':north_checks,
                      'coordinate_label_checks':coordinate_checks,

@@ -20,13 +20,13 @@ FIGURES={'Figure_1':draw_study_area,'Figure_3':allocation_atlas,'Figure_4':e.enr
 if __name__=='__main__':
     parser=argparse.ArgumentParser();parser.add_argument('--figures',nargs='*');parser.add_argument('--exclude',nargs='*',default=[])
     args=parser.parse_args();selected=args.figures or list(FIGURES)
-    contract={'backend':'Python','date':'2026-10-21',
+    contract={'backend':'Python','date':'2026-10-22',
         'conclusion':'Keep existing empirical evidence and source values while making the figure family visually consistent and geographically legible.',
         'evidence':'Same saved observations, predictions, metrics and topology; no new training or example values.',
         'archetypes':['Quantitative grids','Hierarchical map/detail/statistics atlas','Native architecture table'],
         'colour_semantics':{'signed':'Pink negative, light neutral at zero, green positive',
             'ordered_nonnegative':'Same pink-neutral-green ramp on the declared positive range; the colour midpoint is not a statistical null',
-            'density':'Green sparse outer bins, pink dense core; actual logarithmic cell counts',
+            'density':'Green sparse exterior, pink dense core; hexagons use actual cell counts, point clouds use within-panel Scott-KDE density percentiles as declared per figure',
             'categorical':'Discrete labelled pink/green shades; no continuous ordering implied'},
         'cartography':'All geographic coordinate labels outside their own frames; edge intersections recomputed for the selected side; physical gutters reserved for small maps.',
         'reference_patterns_adapted':['Map and distribution paired panels','Shared colourbars','Density plots with marginals','Controlled small-multiple comparisons'],
