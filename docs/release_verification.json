@@ -34,8 +34,8 @@
     },
     {
       "path": "analysis/enhanced_analysis.py",
-      "bytes": 31030,
-      "sha256": "10ac37f9b483e6b98c52092759e346d819079245886d812a7cdce3c242358010"
+      "bytes": 31233,
+      "sha256": "86668646bfe6d6a5e7aad8a2afbe52340f15f38d33ae03c33f3fe0fc6ed108df"
     },
     {
       "path": "analysis/figure_finish.py",
@@ -74,18 +74,18 @@
     },
     {
       "path": "analysis/plot_allocation_atlas.py",
-      "bytes": 11546,
-      "sha256": "5e6a72f49f6eda1f7779228db50e2a654e2fdd1138c06f2eda4ae73e864aa6c8"
+      "bytes": 11737,
+      "sha256": "e53dbe15ae48dd01addee6990e3d78b61169578dd84e9736e0a484e64d6fe98c"
     },
     {
       "path": "analysis/plot_benchmark_results.py",
-      "bytes": 32820,
-      "sha256": "e3c8365ba768e92fe59ef29fbeee39253d96cb9477154b6760944db5744a2a07"
+      "bytes": 32755,
+      "sha256": "ff29c2cac633651be5d190808485e5f55eb8394ee1fbaad9a1adf40f7f874c69"
     },
     {
       "path": "analysis/plot_deep_analysis.py",
-      "bytes": 19943,
-      "sha256": "4d26df942668ad05a4487b968041e75bcd4349616b2dd85cce04cda00bb08f97"
+      "bytes": 19968,
+      "sha256": "253025d21e34b7faa176bc133f922b8ab58dffb2d809dd2989019caded0f7723"
     },
     {
       "path": "analysis/plot_error_diagnostics.py",
@@ -129,8 +129,8 @@
     },
     {
       "path": "analysis/redraw_figures.py",
-      "bytes": 51522,
-      "sha256": "83d3d5978e05da180fc14ecff7b6da6d1bf3575a456dae53742f8c5848e0f4bc"
+      "bytes": 51635,
+      "sha256": "87335fd2845644bc79f9a4189400e725d33750a7be1f62e33cd5a90074514451"
     },
     {
       "path": "analysis/refine_palette_and_maps.py",
@@ -139,8 +139,8 @@
     },
     {
       "path": "analysis/refined_primitives.py",
-      "bytes": 4997,
-      "sha256": "b01a55b603d7802e3b65008388beb6533b077b60481735ac1eb11fb512813eb6"
+      "bytes": 4665,
+      "sha256": "927c8f62c5a050006a49809c89a005340640f355a3513a1f55f7761fa5227160"
     },
     {
       "path": "analysis/run_direct_baselines.py",
@@ -445,7 +445,7 @@
     {
       "path": "docs/source_manifest.json",
       "bytes": 10689,
-      "sha256": "a9555a8441c8002a713241faadb3f0a8093d004140828b1ec77efd3373eab409"
+      "sha256": "636fc41ccbfca1854a5d8d00837e686c73011de540b496b498034696a1183e07"
     },
     {
       "path": "docs/SUPPLEMENTAL_REFERENCE_CHECK.md",

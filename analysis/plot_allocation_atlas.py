@@ -111,6 +111,7 @@ def draw():
     counts=[int(z.sum()) for z in groups]
     overlap_ribbons(m,counts[1],counts[0],counts[2],labels=('Prior','PGCAN'),compact=True)
     label(m,'m','Overlap of prior and mean-map top-198 cells; method-only sets exclude shared cells')
+    m.texts[-1].set_position((-.18,1.0));m.texts[-1].set_va('top')
     n=axes(137,7,35,29);freq=np.bincount(e.freq,minlength=6)
     for xi,(count,colour) in enumerate(zip(freq,[v.SEQ(t) for t in np.linspace(.08,.92,6)])):
         n.vlines(xi,1,max(count,1),color=colour,lw=1.6,alpha=.75)
@@ -135,7 +136,7 @@ def draw():
         'Panels f–h use the exact same geographic window and the scales of their corresponding overview maps. '
         'The joint density uses 1,959 positive-prior cells; Spearman correlation uses all 1,980 cells. '
         'ECDFs and concentration curves retain every cell, including zero shares. Category violins show empirical distributions, with black median dots and interquartile intervals. '
-        'Rank migration uses deterministic grid-ID tie breaking and within-prior-decile percentages; the neutral first class represents zero (positive cells are at least 0.505%). The area-proportional set diagram reports 184 shared and 14 method-only Top-198 selections per method, with outside callouts for the narrow exclusive regions. '
+        'Rank migration uses deterministic grid-ID tie breaking and within-prior-decile percentages; the neutral first class represents zero (positive cells are at least 0.505%). The unit-square membership diagram represents the union of the two Top-198 selections: one square per cell, with 184 split green/pink squares for shared selections and 14 green-only and 14 pink-only squares. Square positions group membership categories and do not encode geography. '
         'Seed frequency counts all 1,980 cells across five original training seeds and uses a logarithmic count axis. '
         'Signed violin gradients encode negative/pink and positive/green changes, with median/IQR marks. The map legend gives seed standard deviation with ddof=1; no confidence intervals or measured emissions accuracies are implied.')
 

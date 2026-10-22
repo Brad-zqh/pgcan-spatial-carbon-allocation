@@ -12,14 +12,15 @@ def emphasis_line(artist,color,width=3.0):
     artist.set_path_effects([pe.Stroke(linewidth=width,foreground=color,alpha=.13),pe.Normal()])
 
 def value_bar(ax,value,y,color,height=.46,sd=None):
-    base=np.array(to_rgba(color));left=base.copy();right=base.copy()
-    left[:3]=.62+.38*base[:3];right[:3]=.28+.72*base[:3]
-    rgba=np.tile(np.linspace(left,right,128)[None,:,:],(2,1,1))
-    patch=Rectangle((0,y-height/2),value,height,facecolor='none',edgecolor=color,lw=.4,zorder=2)
+    patch=Rectangle((0,y-height/2),value,height,facecolor=color,edgecolor=color,lw=.4,zorder=2)
     ax.add_patch(patch)
-    _image(ax,rgba,(0,value,y-height/2,y+height/2),zorder=1,clip=patch.get_path().transformed(patch.get_patch_transform()))
     if sd is not None and sd>0:ax.errorbar(value,y,xerr=sd,fmt='none',ecolor='#3E4741',lw=.8,capsize=2,zorder=3)
     return patch
+
+def row_tone(color,index,total):
+    """Uniform marks, with a light-to-dark progression across ordered rows."""
+    rgb=np.array(to_rgba(color)[:3]);strength=.32+.62*index/max(total-1,1)
+    return tuple(1-strength*(1-rgb))
 
 def _image(ax,rgba,extent,zorder=0,clip=None):
     limits=(ax.get_xlim(),ax.get_ylim());aspect=ax.get_aspect()
@@ -46,31 +47,29 @@ def signed_violin(ax,values,position,cmap,width=.66):
     return violin
 
 def overlap_ribbons(ax,left,shared,right,labels=('Regulatory','Energy-user'),compact=False):
-    n1,n2=left+shared,right+shared;r1,r2=np.sqrt([n1,n2])
-    def intersection(d):
-        t1=np.arccos(np.clip((d*d+r1*r1-r2*r2)/(2*d*r1),-1,1))
-        t2=np.arccos(np.clip((d*d+r2*r2-r1*r1)/(2*d*r2),-1,1))
-        return r1*r1*t1+r2*r2*t2-.5*np.sqrt(max(0,(-d+r1+r2)*(d+r1-r2)*(d-r1+r2)*(d+r1+r2)))
-    d=brentq(lambda x:intersection(x)-shared*np.pi,abs(r1-r2)+1e-8,r1+r2-1e-8)
-    np.testing.assert_allclose(intersection(d)/np.pi,shared,atol=1e-8)
-    margin=.32*r1
-    ax.set(xlim=(-r1-margin,d+r2+margin),ylim=(-1.43*r1,1.20*r1),aspect='equal');ax.axis('off')
-    for x,r,c in [(0,r1,'#6A9251'),(d,r2,'#BE4D90')]:
-        ax.add_patch(Circle((x,0),r,fc=to_rgba(c,.21),ec=c,lw=.9))
-    ax.text((d-r2+r1)/2,0,str(shared),ha='center',va='center',fontsize=11,fontweight='bold')
-    for side,count,mid,rim in [('left',left,(-r1+d-r2)/2,-r1),('right',right,(r1+d+r2)/2,d+r2)]:
-        narrow=count/(n1 if side=='left' else n2)<.22
-        if narrow:
-            out=rim+(-.23 if side=='left' else .23)*r1
-            ax.annotate(str(count),xy=(mid,0),xytext=(out,.48*r1),ha='center',va='center',fontsize=8.3,
-                arrowprops={'arrowstyle':'-','lw':.6,'color':'#657067','connectionstyle':'angle,angleA=90,angleB=0,rad=0'})
-        else:ax.text(mid,0,str(count),ha='center',va='center',fontsize=9,fontweight='bold')
-    for x,name,n,c in [(-.45*r1,labels[0],n1,'#456B36'),(d+.45*r2,labels[1],n2,'#A52C75')]:
-        text=ax.text(x,-1.13*r1,f'{name}\n(n = {n})',ha='center',va='top',fontsize=6.5,color=c)
+    """One equal-area square per member of the union; split squares are shared."""
+    counts=[int(left),int(shared),int(right)];cols=16 if compact else 13
+    rows=int(np.ceil(sum(counts)/cols));green='#739A59';pink='#BF5796'
+    ax.set(xlim=(-.2,cols+.2),ylim=(-7.0 if compact else -5.0,rows+.2),aspect='equal');ax.axis('off')
+    categories=np.repeat(np.arange(3),counts)
+    for index,kind in enumerate(categories):
+        x=index%cols;y=rows-1-index//cols
+        if kind==1:
+            ax.add_patch(Rectangle((x,y),.45,.90,fc=green,ec='none'))
+            ax.add_patch(Rectangle((x+.45,y),.45,.90,fc=pink,ec='none'))
+        else:ax.add_patch(Rectangle((x,y),.90,.90,fc=green if kind==0 else pink,ec='none'))
+    for row,(name,kind) in enumerate([(labels[0]+' only',0),('Shared',1),(labels[1]+' only',2)]):
+        y=-1.5-row*(2.0 if compact else 1.25)
+        if kind==1:
+            ax.add_patch(Rectangle((0,y-.34),.42,.68,fc=green,ec='none'))
+            ax.add_patch(Rectangle((.42,y-.34),.42,.68,fc=pink,ec='none'))
+        else:ax.add_patch(Rectangle((0,y-.34),.84,.68,fc=green if kind==0 else pink,ec='none'))
+        text=ax.text(1.35,y,name,ha='left',va='center',fontsize=6.5)
         text.set_gid('compact_diagnostic_label')
-    ax._set_overlap_geometry={'left_only':left,'shared':shared,'right_only':right,
-        'first_total':n1,'second_total':n2,'area_per_count':float(np.pi),'intersection_area':float(intersection(d)),
-        'radii':[float(r1),float(r2)],'center_distance':float(d),'area_proportional':True}
+    ax._set_overlap_geometry={'left_only':counts[0],'shared':counts[1],'right_only':counts[2],
+        'first_total':left+shared,'second_total':right+shared,'unit_count':len(categories),
+        'encoding':'one equal-area square per union member; shared members use split green/pink squares',
+        'numeric_annotations':False,'unit_categories':categories.tolist()}
 
 def density_scatter(ax,x,y,cmap,size=3.4,alpha=.76):
     x=np.asarray(x);y=np.asarray(y);sample=np.vstack([x,y])

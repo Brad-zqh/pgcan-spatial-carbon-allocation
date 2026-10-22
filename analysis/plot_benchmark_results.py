@@ -145,9 +145,9 @@ def benchmark_plate():
  # Dense five-column values belong in the source table. At the requested
  # larger type size they cannot fit these cells without colliding.
  pd.DataFrame(val,index=names,columns=category_order).to_csv(S/'Benchmark_category_mae_pp.csv',index_label='method')
- cb=f.colorbar(image,cax=a.inset_axes([.15,-.29,.80,.04]),orientation='horizontal',ticks=[0,.025,.05])
+ cb=f.colorbar(image,cax=a.inset_axes([1.035,0,.035,1]),ticks=[0,.025,.05])
  cb.outline.set_visible(False);cb.ax.tick_params(labelsize=6.8,length=2,pad=1)
- cb.ax.text(-.07,.5,'pp',transform=cb.ax.transAxes,ha='right',va='center',fontsize=6.8)
+ cb.set_label('MAE (pp)',fontsize=6.8,labelpad=2)
  a.set_yticks(range(9),[labels[k] for k in names],fontsize=5.6);a.set_xticks(range(5),['Ind.','Trans.','Res.','Mixed','Low'],fontsize=5.5);a.tick_params(length=0);title(a,'k','Category-specific MAE (pp)')
  a=axs[11];strata=pd.read_csv(S/'Benchmark_support_strata.csv')
  for k in ['PGCAN','Multi_relation','No_graph']:
