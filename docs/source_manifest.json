@@ -100,15 +100,15 @@
   {
     "source": "layerwise_architecture.py",
     "released": "analysis/layerwise_architecture.py",
-    "original_sha256": "872d93e2b1dc07d1f39b525f25e6fb5c5cb011105e29e79205bbd17bf7c0ff1a",
-    "released_sha256": "87aa44438b29ae21d3ca9d867b9e559b16027323b2a47c24ea7b51886ccceac9",
+    "original_sha256": "b5e9ea0bcd63a760746e2026254c040ca7b70b7dcb84685327d0bbcdbde56411",
+    "released_sha256": "e9a84cb53f0d9ca17742911568a8b2e8df4494082166deaa2c9b812b157792c4",
     "adaptation": "Data-root configuration/import and optional font discovery only; equations unchanged"
   },
   {
     "source": "architecture_table.py",
     "released": "analysis/architecture_table.py",
-    "original_sha256": "252fd74eb5c177706d0a9ce54d19122fc9cf17a167657ee4ca314b503f7fd193",
-    "released_sha256": "138af0cc44e2406c5c085047635fa6b5040f1419c18163d0ae359f325c443682",
+    "original_sha256": "2e682cb54b509127777a39e4449f5827f698f06bbb11c97cd85eaee85dc788a1",
+    "released_sha256": "e2cf1382020a241e67f71f26913f565a013ae36fa791a87099b79394cab5312f",
     "adaptation": "Data-root configuration/import and optional font discovery only; equations unchanged"
   },
   {
@@ -121,8 +121,8 @@
   {
     "source": "prepare_experiment_report.py",
     "released": "analysis/prepare_experiment_report.py",
-    "original_sha256": "37f2c7aea5718fc31beec11dae09af13dc9136562b682650c012e93025503b8d",
-    "released_sha256": "878c05cd6b8899a9ef0f006deb90b3f76398f024913d77b53a33a7c3581cc61d",
+    "original_sha256": "0fe8ca94587d4ac8a02469c5218c8f28f5bac9f373855b804438ad63fe9e0392",
+    "released_sha256": "52bbfa47557f160eb6c70e5eb1cb5f6e61e1b18c6644cd816cc9a78d9ee1362a",
     "adaptation": "Data-root configuration/import and optional font discovery only; equations unchanged"
   },
   {

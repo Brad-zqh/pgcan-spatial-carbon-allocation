@@ -1,6 +1,6 @@
 {
   "status": "PASS",
-  "public_files": 92,
+  "public_files": 95,
   "raw_or_licensed_assets_copied": false,
   "credential_matches": 0,
   "anonymous_cells": 1980,
@@ -19,8 +19,8 @@
     },
     {
       "path": "analysis/architecture_table.py",
-      "bytes": 3030,
-      "sha256": "138af0cc44e2406c5c085047635fa6b5040f1419c18163d0ae359f325c443682"
+      "bytes": 3690,
+      "sha256": "e2cf1382020a241e67f71f26913f565a013ae36fa791a87099b79394cab5312f"
     },
     {
       "path": "analysis/cartography_style.py",
@@ -39,8 +39,8 @@
     },
     {
       "path": "analysis/layerwise_architecture.py",
-      "bytes": 2395,
-      "sha256": "87aa44438b29ae21d3ca9d867b9e559b16027323b2a47c24ea7b51886ccceac9"
+      "bytes": 4936,
+      "sha256": "e9a84cb53f0d9ca17742911568a8b2e8df4494082166deaa2c9b812b157792c4"
     },
     {
       "path": "analysis/map_classification.py",
@@ -104,8 +104,8 @@
     },
     {
       "path": "analysis/prepare_experiment_report.py",
-      "bytes": 18511,
-      "sha256": "878c05cd6b8899a9ef0f006deb90b3f76398f024913d77b53a33a7c3581cc61d"
+      "bytes": 18121,
+      "sha256": "52bbfa47557f160eb6c70e5eb1cb5f6e61e1b18c6644cd816cc9a78d9ee1362a"
     },
     {
       "path": "analysis/prepare_texture_basemap.py",
@@ -193,6 +193,11 @@
       "sha256": "ad9d2c59e190d578d5d61022814ea6506a09c91983cf01efe6b6304e377b690c"
     },
     {
+      "path": "data/results/Architecture_parameter_ledger.csv",
+      "bytes": 1424,
+      "sha256": "5c1fc4bda9647a9ed5368dd733817092b5e264776546a1bcf96679c4eacc1093"
+    },
+    {
       "path": "data/results/Benchmark_all_fold_metrics.csv",
       "bytes": 55942,
       "sha256": "0033482ba8518e3839a93204fd45621d0a844525c6470d24e1cdd4e6912c347d"
@@ -241,6 +246,11 @@
       "path": "data/results/Deep_shared_source_screening.csv",
       "bytes": 796,
       "sha256": "3b0c5a10c880db8465cd0b3cb6f5da14b6ffc69c1ba204fe3d272d14b6869fa3"
+    },
+    {
+      "path": "data/results/Model_architecture_display.csv",
+      "bytes": 942,
+      "sha256": "d3c9cd4932576be1784fb64aed2f63d140ffc1a630a33f96d3626d4cc62e413b"
     },
     {
       "path": "data/results/oof_Clean_prior.npy",
@@ -403,6 +413,11 @@
       "sha256": "08e59dca064e4638323ef463ec95249e6e80d0c398d4723c850355391b2e93ae"
     },
     {
+      "path": "docs/assets/Table_4.png",
+      "bytes": 166477,
+      "sha256": "64cdc4eadb37268e8a2d4853ec80cf3607a440ed96993a7ab6dd065ac32460aa"
+    },
+    {
       "path": "docs/citation_verification.csv",
       "bytes": 45814,
       "sha256": "1c43286797affc4f57f81d27a321521b227ce61996e1d4ea8ddc3c76362bb1c6"
@@ -415,7 +430,7 @@
     {
       "path": "docs/source_manifest.json",
       "bytes": 9527,
-      "sha256": "4d162a450ccec7a6225c0d3fdc7efcb4f51d72fbb4061da466abefffd5d486e7"
+      "sha256": "105434a6ef86df1ab1cde0d76e02202ed94a95fd0e61647fd0bb650ddb08bce9"
     },
     {
       "path": "docs/SUPPLEMENTAL_REFERENCE_CHECK.md",
@@ -434,8 +449,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 5383,
-      "sha256": "d40d3f541099eae31c7193148e30c7022e8168ab1d90c68dda173a12b90a8960"
+      "bytes": 5864,
+      "sha256": "f3d86ffdfc10a3d4b90f29e9d19e43382e2489509c218dbf4ca34b4212c9bab7"
     },
     {
       "path": "scripts/import_local_workspace.py",

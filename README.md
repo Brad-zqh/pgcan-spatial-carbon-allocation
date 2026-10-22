@@ -86,6 +86,16 @@ the current main branch carries this figure-design update.
 
 ![Current held-out model atlas](docs/assets/Figure_13.png)
 
+## Compact architecture table
+
+The presentation separates layer names, input/output widths and output tensors,
+with grouped coordinate, PGCAN and multi-relation blocks and compact settings.
+It adapts the layout of the author-supplied GTCNNWR table; all values are from
+this implementation. Registered counts remain 5,339 and 6,638. The complete
+layer parameter ledger and the display table are in `data/results/`.
+
+![Current architecture table](docs/assets/Table_4.png)
+
 ## Data, citations and licenses
 
 Author code: MIT. Anonymous author-generated numerical outputs: CC BY 4.0.

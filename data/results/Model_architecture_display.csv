@@ -1,0 +1,28 @@
+﻿Network layer,Input width,Output width,Output tensor
+Coordinate branch (both),,,
+Input: coordinates s,,2,N × 2
+FC1 + Tanh,2,48,N × 48
+FC2 + Tanh,48,48,N × 48
+Coefficient head,48,10,N × 10
+PGCAN context,,,
+"Input: X, F, AX",,23,N × 23
+FC1 + ReLU,23,48,N × 48
+FC2 + ReLU,48,24,N × 24
+Output,24,1,N × 1
+Multi-relation context,,,
+3 relation encoders + ReLU,9,16,N × 3 × 16
+Gate + softmax,16,3,N × 3
+Weighted fusion,3 × 16,16,N × 16
+"Input: X, F, AX, h",,39,N × 39
+FC1 + ReLU,39,48,N × 48
+FC2 + ReLU,48,24,N × 24
+Output,24,1,N × 1
+Hyperparameters,Value,Protocol,Value
+Optimizer,Adam,Learning rate,0.008
+Weight decay,0.0002,Gradient cap,5
+PGCAN parameters,"5,339",MR parameters,"6,638"
+Training batch,Full nodes,Loss,CE + penalties
+Prior / graph / coefficient,0.025 / 0.015 / 0.0005,,
+Original fit,900 epochs,Seeds,5
+Spatial refit,≤450 epochs,Seeds,3
+Outer folds / buffer,5 / 1 km,Block size,10 km

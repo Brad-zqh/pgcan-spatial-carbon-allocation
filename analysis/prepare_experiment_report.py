@@ -39,10 +39,12 @@ table(1,'What is transferred from the three reference studies',
  ['Yap et al., 2025; building operating carbon','Four urban node types, six edge types; two-layer heterogeneous GraphSAGE; building-energy supervision.','Explicit relation schemas; topology audit; feature/module controls and relation-level diagnostics.','Implemented candidate has one grid-node type and three covariate-derived relations; it is not their heterogeneous city graph.']
  ],'References inform experimental design. Their observations, performance values and causal interpretations are not copied.',[30,47,47,50])
 counts=pd.read_csv(S/'Benchmark_architecture_counts.csv').set_index('method')
-from layerwise_architecture import specification
-layer_headers,layer_rows,layer_widths=specification()
-table(2,'Layer-wise architectures and hyperparameters',layer_headers,layer_rows,
- 'N denotes the current training-node count. All fully connected parameter counts include bias. Superscript 1 denotes modules used only by the multi-relation candidate; its context MLP replaces the PGCAN context MLP. The coordinate branch is shared in design, not shared across independently fitted models. There are no convolution, batch-normalization or dropout layers in this implementation. Allocation softmax runs across cells. Epoch selection uses buffered inner spatial validation every 15 epochs, patience five checks and a minimum of 120 epochs. Registered counts retain disabled branches in ablation models.',layer_widths)
+from layerwise_architecture import specification,display_specification,DISPLAY_NOTE
+ledger_headers,ledger_rows,_=specification()
+pd.DataFrame(ledger_rows,columns=ledger_headers).to_csv(T/'Architecture_parameter_ledger.csv',index=False,encoding='utf-8-sig')
+layer_headers,layer_rows,layer_widths=display_specification()
+table(2,'Network architectures and hyperparameters',layer_headers,layer_rows,
+ DISPLAY_NOTE,layer_widths)
 
 
 audit=pd.read_csv(S/'Benchmark_relation_audit.csv')

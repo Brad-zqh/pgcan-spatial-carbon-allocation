@@ -1,0 +1,25 @@
+﻿Block / layer,Operator,Output tensor / setting,Parameters
+Shared inputs,X; F; coordinates,N × 9; N × 5; N × 2,—
+Spatial aggregation,Distance-weighted 8NN,N × 9,0
+Coordinate FC1,Linear 2 → 48; Tanh,N × 48,144
+Coordinate FC2,Linear 48 → 48; Tanh,N × 48,2352
+Coefficient head,Linear 48 → 10,N × 10,490
+Coordinate residual,Σ beta_j X_j + intercept,N × 1,0
+PGCAN context input,"Concat [X, F, AX]",N × 23,0
+PGCAN context FC1,Linear 23 → 48; ReLU,N × 48,1152
+PGCAN context FC2,Linear 48 → 24; ReLU,N × 24,1176
+PGCAN context head,Linear 24 → 1,N × 1,25
+Relation encoders¹,3 × (Linear 9 → 16; ReLU),N × 3 × 16,480
+Relation gate¹,"Linear [X,F,s]: 16 → 3; softmax",N × 3,51
+Relation fusion¹,Gate-weighted sum,N × 16,0
+MR context input¹,"Concat [X, F, AX, fusion]",N × 39,0
+MR context FC1¹,Linear 39 → 48; ReLU,N × 48,1920
+MR context FC2¹,Linear 48 → 24; ReLU,N × 24,1176
+MR context head¹,Linear 24 → 1,N × 1,25
+Allocation (both),"softmax(log(max(p0, ε)) + r)",N × 1; sum = 1,0
+Total registered,PGCAN / multi-relation (MR),—,"5,339 / 6,638"
+Optimizer,Adam; learning rate 0.008,Weight decay 0.0002,—
+Batch / gradient,Full training-node batch,Gradient norm cap 5,—
+Loss weights,Prior / graph / coefficient,0.025 / 0.015 / 0.0005,—
+Spatial refits,5 outer folds; 3 seeds,Up to 450 epochs,—
+Saved original,5 seeds; no early stopping,900 epochs,—
