@@ -181,8 +181,17 @@ def figure9():
     f=plt.figure(figsize=(v.WIDTH,5.2))
     heading(f,'Screening depends strongly on the shared source package',
             'Saved source-removal experiments · exact location counts · explicit overlap between benchmark cohorts')
-    a=f.add_axes([.035,.61,.27,.28]);title(a,'a','Benchmark cohort intersections')
-    overlap_ribbons(a,87,59,10)
+    a=f.add_axes([.08,.61,.24,.28]);title(a,'a','Benchmark cohort intersections')
+    width=.60;green,pink='#739A59','#BF5796'
+    a.bar(0,87,width=width,color=green,zorder=2)
+    a.bar(1-width/4,59,width=width/2,color=green,zorder=2)
+    a.bar(1+width/4,59,width=width/2,color=pink,zorder=2)
+    a.bar(2,10,width=width,color=pink,zorder=2)
+    a.set(xlim=(-.55,2.55),ylim=(0,100),yticks=[0,50,100],ylabel='Sites',
+          xticks=[0,1,2],xticklabels=['Regulatory\nonly','Shared','Energy\nonly'])
+    a.tick_params(axis='x',length=0,pad=3);style(a)
+    a._set_overlap_geometry={'left_only':87,'shared':59,'right_only':10,'first_total':146,'second_total':69,
+        'encoding':'three zero-based count bars; shared bar has equal green and pink halves','numeric_annotations':False}
     # Actual site multiplicities, not occupied-cell counts.
     energy=pd.read_csv(SD/'energy_benchmark_sites.csv')
     ei=pd.Index(D.grid_id).get_indexer(energy.grid_id)
@@ -228,7 +237,7 @@ def figure9():
     footer(f,['Top-198 = 10% of cells. Benchmark membership is withheld from training; POI geolocation is shared and 59 sites occur in both cohorts.',
               'The source package includes POI and linked patent/innovation fields. This perturbation measures source dependence, not emissions accuracy.'])
     v.save(f,'Figure_9',['Deep_shared_source_screening.csv','Deep_source_removal_coverage_curves.csv','Deep_source_removed_prior.npy','Deep_no_poi_seed_maps.npy','energy_benchmark_sites.csv'],
-        'Benchmark cohort intersections (87 regulatory-only, 59 shared, 10 energy-only sites), full-threshold source-removal screening curves, exact counts on overlapping and energy-only cohorts, and spatial redistribution. Panel a is a unit-square membership diagram: one square per site in the union, with 87 green-only, 59 split green/pink and 10 pink-only squares. Square positions group membership categories and do not encode geography. The source package includes POI and linked innovation variables; removal changes both prior/target construction and network inputs. The comparison does not isolate a single feature effect.')
+        'Benchmark cohort intersections (87 regulatory-only, 59 shared, 10 energy-only sites), full-threshold source-removal screening curves, exact counts on overlapping and energy-only cohorts, and spatial redistribution. Panel a uses three zero-based count bars for regulatory-only, shared and energy-only sites. The shared bar has equal green and pink halves; its height counts each shared site once. The source package includes POI and linked innovation variables; removal changes both prior/target construction and network inputs. The comparison does not isolate a single feature effect.')
 
 def overview():
     # Current plots only; no chronological backup accumulation.

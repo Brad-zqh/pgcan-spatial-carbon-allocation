@@ -107,11 +107,22 @@ def draw():
     l.set(xticks=[0,4,9],xticklabels=[1,5,10],yticks=[0,4,9],yticklabels=[1,5,10],xlabel='PGCAN rank decile',ylabel='Prior rank decile')
     cb=f.colorbar(im,cax=l.inset_axes([1.03,0,.055,1]),ticks=[0,50,100]);cb.outline.set_visible(False);cb.ax.tick_params(labelsize=8.2,length=1,pad=1)
     label(l,'l','Rank-migration matrix; percentages within each prior decile')
-    m=axes(77,7,35,29);groups=[e.pm&e.fm,e.pm&~e.fm,~e.pm&e.fm]
+    m=axes(73,7,55,29);groups=[e.pm&e.fm,e.pm&~e.fm,~e.pm&e.fm]
     counts=[int(z.sum()) for z in groups]
-    overlap_ribbons(m,counts[1],counts[0],counts[2],labels=('Prior','PGCAN'),compact=True)
+    green,pink='#739A59','#BF5796';width=.60
+    m.bar(0,counts[1],width=width,color=green,zorder=2)
+    m.bar(1-width/4,counts[0],width=width/2,color=green,zorder=2)
+    m.bar(1+width/4,counts[0],width=width/2,color=pink,zorder=2)
+    m.bar(2,counts[2],width=width,color=pink,zorder=2)
+    m.set(xlim=(-.55,2.55),ylim=(0,210),yticks=[0,100,200],ylabel='Cells',
+          xticks=[0,1,2],xticklabels=['Prior\nonly','Shared','PGCAN\nonly'])
+    m.tick_params(axis='x',length=0,pad=3)
+    m._set_overlap_geometry={'left_only':counts[1],'shared':counts[0],'right_only':counts[2],
+        'first_total':counts[0]+counts[1],'second_total':counts[0]+counts[2],
+        'encoding':'three zero-based count bars; shared bar has equal green and pink halves',
+        'numeric_annotations':False,'panel_width_mm':55,'previous_panel_width_mm':35}
     label(m,'m','Overlap of prior and mean-map top-198 cells; method-only sets exclude shared cells')
-    m.texts[-1].set_position((-.18,1.0));m.texts[-1].set_va('top')
+    m.texts[-1].set_position((.025,.98));m.texts[-1].set_va('top')
     n=axes(137,7,35,29);freq=np.bincount(e.freq,minlength=6)
     for xi,(count,colour) in enumerate(zip(freq,[v.SEQ(t) for t in np.linspace(.08,.92,6)])):
         n.vlines(xi,1,max(count,1),color=colour,lw=1.6,alpha=.75)
@@ -136,7 +147,7 @@ def draw():
         'Panels f–h use the exact same geographic window and the scales of their corresponding overview maps. '
         'The joint density uses 1,959 positive-prior cells; Spearman correlation uses all 1,980 cells. '
         'ECDFs and concentration curves retain every cell, including zero shares. Category violins show empirical distributions, with black median dots and interquartile intervals. '
-        'Rank migration uses deterministic grid-ID tie breaking and within-prior-decile percentages; the neutral first class represents zero (positive cells are at least 0.505%). The unit-square membership diagram represents the union of the two Top-198 selections: one square per cell, with 184 split green/pink squares for shared selections and 14 green-only and 14 pink-only squares. Square positions group membership categories and do not encode geography. '
+        'Rank migration uses deterministic grid-ID tie breaking and within-prior-decile percentages; the neutral first class represents zero (positive cells are at least 0.505%). In m, three zero-based bars show 14 Prior-only cells, 184 shared cells and 14 PGCAN-only cells in the union of the two Top-198 selections. The shared bar has equal green and pink halves; its height counts each shared cell once. '
         'Seed frequency counts all 1,980 cells across five original training seeds and uses a logarithmic count axis. '
         'Signed violin gradients encode negative/pink and positive/green changes, with median/IQR marks. The map legend gives seed standard deviation with ddof=1; no confidence intervals or measured emissions accuracies are implied.')
 

@@ -135,7 +135,7 @@ def enriched_main4():
     for i,k in enumerate(METHODS):
         values=v.runs.loc[v.runs.method.eq(k),'primary_coverage'].to_numpy()*100
         mu=values.mean();sd=values.std(ddof=1) if len(values)>1 else 0
-        value_bar(b,mu,i,row_tone(v.INK,i,len(METHODS)),height=.52,sd=sd)
+        value_bar(b,mu,i,row_tone(v.INK,i,len(METHODS)),height=.52,sd=sd,accent=k=='Full')
         txt=f'{mu:.3f}' if len(values)==1 else f'{mu:.3f} ± {sd:.3f}'
         b.text(1.02,i,txt,transform=b.get_yaxis_transform(),fontsize=6.8,va='center')
     b.set(yticks=range(7),xlim=(0,60),ylim=(6.6,-.6),xlabel='Site coverage (%)')
@@ -154,7 +154,7 @@ def enriched_main4():
     f.legend(*a.get_legend_handles_labels(),loc='lower left',bbox_to_anchor=(.07,.04),ncol=3,fontsize=6.5,handlelength=1.5,columnspacing=.8)
     v.foot(f,'Curves / cohort bars: fixed mean maps; panel b: per-run mean ± seed SD | The two cohorts share 59 sites and POI geolocation')
     v.save(f,'Figure_4',['coverage_curves.csv','metrics_runs.csv','energy_benchmark_sites.csv','allocation_500m.csv'],
-           'Coverage, captured mass, per-seed variation and paired regulatory / energy-user cohort coverage. Shared sites and geolocation limit cohort independence. Bars in b show per-run mean coverage, with capped sample-SD intervals; numerical labels retain three decimals. Paired green/pink bars in d show the two exact fixed-map cohort coverages. Each bounded bar runs from zero to its actual value; each bar has one uniform colour. Green shades in b progress from light to dark by row; in d the green and pink series each follow that row progression. Shade encodes row order, not magnitude.')
+           'Coverage, captured mass, per-seed variation and paired regulatory / energy-user cohort coverage. Shared sites and geolocation limit cohort independence. Bars in b show per-run mean coverage, with capped sample-SD intervals; numerical labels retain three decimals. Paired green/pink bars in d show the two exact fixed-map cohort coverages. Each bounded bar runs from zero to its actual value. Green shades in b progress from light to dark by row; only the PGCAN bar has a pink-to-green internal accent. In d the green and pink series each follow that row progression. Shade encodes row order, not magnitude; the internal accent is decorative.')
 
 def input_structure():
     corr=X[FEATURES].corr(method='spearman').to_numpy()

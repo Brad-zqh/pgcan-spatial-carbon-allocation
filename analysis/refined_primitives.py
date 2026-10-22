@@ -1,7 +1,7 @@
 """Scientific marks whose positions, shapes and colours encode real quantities."""
 import os
 import numpy as np
-from matplotlib.colors import to_rgba, Normalize
+from matplotlib.colors import to_rgba, Normalize,LinearSegmentedColormap
 from matplotlib.path import Path
 from scipy.stats import gaussian_kde,rankdata
 from scipy.optimize import brentq
@@ -11,9 +11,14 @@ import matplotlib.patheffects as pe
 def emphasis_line(artist,color,width=3.0):
     artist.set_path_effects([pe.Stroke(linewidth=width,foreground=color,alpha=.13),pe.Normal()])
 
-def value_bar(ax,value,y,color,height=.46,sd=None):
-    patch=Rectangle((0,y-height/2),value,height,facecolor=color,edgecolor=color,lw=.4,zorder=2)
+def value_bar(ax,value,y,color,height=.46,sd=None,accent=False):
+    patch=Rectangle((0,y-height/2),value,height,facecolor='none' if accent else color,edgecolor=color,lw=.4,zorder=2)
     ax.add_patch(patch)
+    if accent:
+        cmap=LinearSegmentedColormap.from_list('model_accent',['#D992B9','#F6F5EE',color])
+        rgba=np.tile(cmap(np.linspace(0,1,160))[None,:,:],(2,1,1))
+        _image(ax,rgba,(0,value,y-height/2,y+height/2),zorder=1,clip=patch.get_path().transformed(patch.get_patch_transform()))
+        ax._accent_bar_rows=getattr(ax,'_accent_bar_rows',[])+[float(y)]
     if sd is not None and sd>0:ax.errorbar(value,y,xerr=sd,fmt='none',ecolor='#3E4741',lw=.8,capsize=2,zorder=3)
     return patch
 

@@ -23,22 +23,22 @@
   {
     "source": "enhanced_analysis.py",
     "released": "analysis/enhanced_analysis.py",
-    "original_sha256": "53897a064cd6c9412847f8031368d311269e0797e72a68c2f977ff5e9f82e99e",
-    "released_sha256": "86668646bfe6d6a5e7aad8a2afbe52340f15f38d33ae03c33f3fe0fc6ed108df",
+    "original_sha256": "80ba33e8b36a9bff2c60185d6b2d733fa028fda1ebd24facfa5d20cd5fd64e8b",
+    "released_sha256": "ba0c4f3717e8fb2f2e43fdbcde47e3ec1685efa04502653d994a9bb1f9a55155",
     "adaptation": "Data-root configuration/import and optional font discovery only; equations unchanged"
   },
   {
     "source": "redraw_figures.py",
     "released": "analysis/redraw_figures.py",
-    "original_sha256": "162be1ced82814939f4c0badf7515a9f655c4d26c07c958d5a1e3c8a6a3172f7",
-    "released_sha256": "87335fd2845644bc79f9a4189400e725d33750a7be1f62e33cd5a90074514451",
+    "original_sha256": "d45844aff0404b47c2f371d1e2c367df81477515fa27fbab7248db0fd49168b9",
+    "released_sha256": "984f2203c19a8505d944767cd0fe380444b030515011e58d9b74b28c3a01ced1",
     "adaptation": "Data-root configuration/import and optional font discovery only; equations unchanged"
   },
   {
     "source": "plot_deep_analysis.py",
     "released": "analysis/plot_deep_analysis.py",
-    "original_sha256": "d512b67b6bcff8f97b488719285cd181563841afbe9fd8f4e369c13e55672d3a",
-    "released_sha256": "253025d21e34b7faa176bc133f922b8ab58dffb2d809dd2989019caded0f7723",
+    "original_sha256": "9add24dd961124940cc1f289b797be4df4cb34075399f742433a968d378f01d9",
+    "released_sha256": "e6621d49a78a04b72753a132af989d0a9a1b2a04bc456fc6e250db69de65bdb0",
     "adaptation": "Data-root configuration/import and optional font discovery only; equations unchanged"
   },
   {
@@ -65,8 +65,8 @@
   {
     "source": "plot_allocation_atlas.py",
     "released": "analysis/plot_allocation_atlas.py",
-    "original_sha256": "e8602ea8723382ca235f6c1248cc3de92bd3ea3349d40bb647c97535b9fd90a8",
-    "released_sha256": "e53dbe15ae48dd01addee6990e3d78b61169578dd84e9736e0a484e64d6fe98c",
+    "original_sha256": "4b9b5fe16cd4829bb4f69b98d986b2f1f84e88157ce08ea13d2e7869e2fc3233",
+    "released_sha256": "9f69eb2508dd7d54188bc3cfcdc311cc8b174c3a3579a1abd79647c9d13315c1",
     "adaptation": "Data-root configuration/import and optional font discovery only; equations unchanged"
   },
   {
@@ -107,8 +107,8 @@
   {
     "source": "refined_primitives.py",
     "released": "analysis/refined_primitives.py",
-    "original_sha256": "b407cad1cac4f76c6b820ee23166ed668c2f3dea9df005017dda0a22ddde4cc2",
-    "released_sha256": "927c8f62c5a050006a49809c89a005340640f355a3513a1f55f7761fa5227160",
+    "original_sha256": "dbb8ecea4ea0e593935b559792a2484525500361c96372ccf9c2ebbd10c6757b",
+    "released_sha256": "8d597002833bc2d6af77fed6f9033cf99f79e96c5a69673a26ece0130a537062",
     "adaptation": "Data-root configuration/import and optional font discovery only; equations unchanged"
   },
   {
