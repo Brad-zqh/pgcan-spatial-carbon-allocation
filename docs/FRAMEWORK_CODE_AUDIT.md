@@ -1,7 +1,7 @@
 # Framework–code correspondence audit
 
 Audit date: 2026-10-22. Result: **PASS for the original PGCAN architecture**.
-Current Figure 2 is the expanded seven-panel API atlas. Panels c/d describe the original model, e the buffered spatial evaluation, and f the separate multi-relation candidate. The earlier editable PPT is retained as an original-model reference only.
+Current Figure 2 is the concise seven-panel atlas, reconstructed as an editable PPT and published from its actual PowerPoint export. Panels c/d describe the original model, e the buffered spatial evaluation, and f the separate multi-relation candidate.
 
 | Framework component | Executed implementation | Verification |
 |---|---|---|
