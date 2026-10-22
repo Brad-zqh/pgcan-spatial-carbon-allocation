@@ -89,8 +89,8 @@
     },
     {
       "path": "analysis/plot_prediction_matrix.py",
-      "bytes": 11967,
-      "sha256": "053172e42499068ee4ad1cc86a4c31e8b16200941901dbd285f514fb167fff07"
+      "bytes": 11100,
+      "sha256": "54531048b363f0e8876a499e872c8cbb3a822c0f66e48de6faf4c56b5de7e532"
     },
     {
       "path": "analysis/prepare_administrative_context.py",
@@ -149,8 +149,8 @@
     },
     {
       "path": "analysis/verify_prediction_atlas.py",
-      "bytes": 3415,
-      "sha256": "a8341669c380868b57d11f56b8de5fabef7d7761c711f72c691b03057866552e"
+      "bytes": 4478,
+      "sha256": "29d3b436fabca5e2a91ac44e28a9bc9ccc4ec1bf94bfc400360b94caadfb10d9"
     },
     {
       "path": "analysis/visual_polish.py",
@@ -399,8 +399,8 @@
     },
     {
       "path": "docs/assets/Figure_13.png",
-      "bytes": 456081,
-      "sha256": "d4579fe64f5e7128cc708bf8a133c7d203d01c399427bbe8d17aa22b5df60771"
+      "bytes": 477129,
+      "sha256": "08e59dca064e4638323ef463ec95249e6e80d0c398d4723c850355391b2e93ae"
     },
     {
       "path": "docs/citation_verification.csv",
@@ -409,13 +409,13 @@
     },
     {
       "path": "docs/FRAMEWORK_CODE_AUDIT.md",
-      "bytes": 3253,
-      "sha256": "e6882997d590135817aeebd8478000c1e512e0d6da4fd6537d3e8574f67a7e7a"
+      "bytes": 3440,
+      "sha256": "be5c4cb165c813921bcb55d195e9271c97a1c08b30760e40a7205c7774b40fe4"
     },
     {
       "path": "docs/source_manifest.json",
       "bytes": 9527,
-      "sha256": "e1b120ccdea212d4f4263f82f9f1a3760474c535f348c4972a7929636b06a9c5"
+      "sha256": "211127494ef79f6f62b01e6d3254798e24e8cdcf0a9bfaeb18265ea4df46b96b"
     },
     {
       "path": "docs/SUPPLEMENTAL_REFERENCE_CHECK.md",
@@ -434,8 +434,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 5368,
-      "sha256": "a7d35f931840d51a6c5d2699e0f3a1be0aa7fe47c1e8f45f10549ebe8b2d7f8c"
+      "bytes": 5383,
+      "sha256": "d40d3f541099eae31c7193148e30c7022e8168ab1d90c68dda173a12b90a8960"
     },
     {
       "path": "scripts/import_local_workspace.py",

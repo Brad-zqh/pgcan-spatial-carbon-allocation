@@ -1,4 +1,4 @@
-"""Independently reproduce every displayed metric, density rank and error ECDF."""
+"""Independently reproduce displayed metrics and density ranks; audit layout."""
 import os
 from pathlib import Path
 import json,hashlib
@@ -13,7 +13,7 @@ def main():
     cells=pd.read_csv(S/'Benchmark_cell_manifest.csv');target=cells.target_share.to_numpy()*100
     metrics=pd.read_csv(S/'Benchmark_prediction_density_metrics.csv')
     styling=pd.read_csv(S/'Benchmark_prediction_density_styling.csv')
-    ecdf=pd.read_csv(S/'Benchmark_prediction_error_ecdf.csv');rows=[]
+    ecdf=pd.read_csv(S/'Benchmark_prediction_error_ecdf.csv');residuals=pd.read_csv(S/'Benchmark_prediction_signed_residuals.csv');rows=[]
     assert len(metrics)==15 and len(styling)==len(ecdf)==15*1980
     old=json.loads((P/'qa/prediction_matrix_contract.json').read_text(encoding='utf-8'))
     for item in metrics.itertuples():
@@ -32,17 +32,30 @@ def main():
         curve=ecdf[ecdf.method.eq(item.method)]
         np.testing.assert_allclose(curve.absolute_error_pp,np.sort(abs(pred-target)),rtol=1e-10,atol=1e-13)
         np.testing.assert_allclose(curve.cumulative_fraction,np.arange(1,1981)/1980,atol=1e-12)
+        strip=residuals[residuals.method.eq(item.method)]
+        assert strip.grid_id.tolist()==cells.grid_id.tolist()
+        np.testing.assert_allclose(strip.target_share_pct,target,rtol=1e-12,atol=1e-13)
+        np.testing.assert_allclose(strip.signed_residual_pp,pred-target,rtol=1e-9,atol=1e-13)
         rows.append({'method':item.method,'n_points':1980,'n_ecdf_values':1980,'metrics_density_and_ecdf_reproduced':True})
     pdf=fitz.open(P/'Figures/Figure_13.pdf');page=pdf[0]
+    text=page.get_text()
+    assert text.count('RMSE =')==15 and text.count('MAE =')==15
+    assert text.count('Density percentile (%)')==15
+    assert 'Residual (pp)' not in text and 'Error ECDF' not in text
+    manifest=json.loads((P/'figure_manifest.json').read_text(encoding='utf-8'))
+    layout=next(item for item in manifest if item['figure']=='Figure_13')['layout']
+    assert layout['one_scatter_per_model'] and layout['individual_vertical_colourbars']==15
+    assert layout['metrics_location']=='upper left inside each scatter'
     fonts={s['font'] for b in page.get_text('dict')['blocks'] for line in b.get('lines',[]) for s in line['spans']}
     assert all('TimesNewRoman' in name for name in fonts)
-    print_scale=176/(page.rect.width/72*25.4)
+    print_scale=min(176/(page.rect.width/72*25.4),245/(page.rect.height/72*25.4))
     report={'status':'PASS','methods':rows,'print_width_mm':176,'print_scale_from_export':print_scale,
         'general_text_minimum_at_print_pt':8.2*print_scale,'compact_diagnostic_text_at_print_pt':6.2*print_scale,
         'point_positions_unchanged':True,'jitter':False,'observations_sampled':False,
         'all_unfavourable_results_retained':True,'original_prediction_arrays_unchanged':True,
+        'layout':layout,'exactly_one_scatter_per_model':True,'metrics_in_upper_left':True,
         'density_colour_semantics':'Within-panel KDE density percentile; not absolute counts or emissions uncertainty'}
     (P/'qa/prediction_atlas_verification.json').write_text(json.dumps(report,indent=2),encoding='utf-8')
     assert report['general_text_minimum_at_print_pt']>=7 and report['compact_diagnostic_text_at_print_pt']>=5
-    print('PREDICTION_ATLAS_PASS: all 29700 paired cells, 15 metrics, density ranks and ECDFs independently reproduced; print type checked')
+    print('PREDICTION_ATLAS_PASS: 29700 pairs, metrics and density ranks reproduced; 15 single panels, upper-left metrics and vertical density bars checked')
 if __name__=='__main__':main()

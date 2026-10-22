@@ -1,7 +1,7 @@
 # Framework–code correspondence audit
 
 Audit date: 2026-10-22. Result: **PASS for the original PGCAN architecture**.
-The editable Figure 2 is not a diagram of the separate multi-relation candidate.
+Current Figure 2 is the expanded seven-panel API atlas. Panels c/d describe the original model, e the buffered spatial evaluation, and f the separate multi-relation candidate. The earlier editable PPT is retained as an original-model reference only.
 
 | Framework component | Executed implementation | Verification |
 |---|---|---|
@@ -19,7 +19,7 @@ The editable Figure 2 is not a diagram of the separate multi-relation candidate.
 ## Distinguish the experimental variants
 
 Original PGCAN and its spatial refit both register **5,339 parameters**, but their
-validation scopes and graph normalization differ. The original Figure 2 uses
+validation scopes and graph normalization differ. Panel c of current Figure 2 describes
 five full-domain 900-epoch fits. Buffered spatial evaluation instead fits scalers
 on training nodes, permits messages only from training sources, row-normalizes
 query weights and selects up to 450 epochs using inner spatial validation.
@@ -29,7 +29,7 @@ The **6,638-parameter multi-relation candidate** is specified in manuscript Tabl
 and audited in Figure 12. It retains one grid-node type and has three relations,
 three 9→16 encoders, a 16→3 gate from [X, coordinates, class indicators], weighted
 relation fusion and a 39→48→24→1 context branch. It is not a heterogeneous
-building–street graph and is not inserted into the original-model Figure 2.
+building–street graph and is shown separately in panel f of the expanded Figure 2.
 
 The diagram label “8-neighbour” means distance-based 8NN, not a fixed eight-cell
 Moore neighbourhood. Tensor/neuron thumbnails and inset result charts are schematic.
