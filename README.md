@@ -65,7 +65,6 @@ python analysis/run_model_benchmark.py
 python analysis/run_direct_baselines.py
 python analysis/deep_model_analysis.py
 python analysis/refine_palette_and_maps.py
-python analysis/prepare_experiment_report.py
 ```
 The existing corrected input directory must contain `experiment_core.py`,
 `predictors_only.csv`, `allocation_500m.csv` and authorized evaluation inputs.
@@ -90,8 +89,7 @@ R², RMSE and MAE still use the seed-mean ensemble and are unchanged.
 Displayed metrics use three decimals; positive errors below 0.001 are
 shown as <0.001. The pp unit means percentage points, not relative percent
 change. Values rounded to R² = 1.000 need not be mathematically exact.
-Scientific results in v0.1.0 remain valid;
-the current main branch carries this figure-design update.
+Scientific results in v0.1.0 remain valid; v0.1.1 includes the current figure design.
 
 ![Current held-out model atlas](docs/assets/Figure_13.png)
 
@@ -104,6 +102,15 @@ this implementation. Registered counts remain 5,339 and 6,638. The complete
 layer parameter ledger and the display table are in `data/results/`.
 
 ![Current architecture table](docs/assets/Table_4.png)
+
+## Current public release
+
+Version **0.1.1** includes the current research and visualization code, anonymous
+results, and verification records. Coverage bars use one solid colour per row,
+progressing from pink to green; no bar has an internal colour gradient. Enlarged
+intersection panels and the annotated category-error matrix are retained.
+See [public repository scope](docs/PUBLIC_SCOPE.md) for the included materials
+and the separation from private manuscript production and collaborator data.
 
 ## Data, citations and licenses
 

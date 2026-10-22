@@ -129,22 +129,15 @@
     "source": "architecture_table.py",
     "released": "analysis/architecture_table.py",
     "original_sha256": "2e682cb54b509127777a39e4449f5827f698f06bbb11c97cd85eaee85dc788a1",
-    "released_sha256": "e2cf1382020a241e67f71f26913f565a013ae36fa791a87099b79394cab5312f",
-    "adaptation": "Data-root configuration/import and optional font discovery only; equations unchanged"
+    "released_sha256": "d2a496290b9370e7a458567d0dfe5ad3259350afe76bc01ba950bf8301b821ec",
+    "adaptation": "Data-root configuration/import and optional font discovery only; equations unchanged; remove manuscript-production wording from figure metadata/docstring only; equations unchanged"
   },
   {
     "source": "refine_palette_and_maps.py",
     "released": "analysis/refine_palette_and_maps.py",
     "original_sha256": "d54afb7abb5c9c0020184b023c4b49b16de2381964cee972ac05ff94d422f778",
-    "released_sha256": "787d2df9ae5add1f9237af099c671c5051f579adda43eeb7c6bf85561a5e943e",
-    "adaptation": "Data-root configuration/import and optional font discovery only; equations unchanged"
-  },
-  {
-    "source": "prepare_experiment_report.py",
-    "released": "analysis/prepare_experiment_report.py",
-    "original_sha256": "0fe8ca94587d4ac8a02469c5218c8f28f5bac9f373855b804438ad63fe9e0392",
-    "released_sha256": "52bbfa47557f160eb6c70e5eb1cb5f6e61e1b18c6644cd816cc9a78d9ee1362a",
-    "adaptation": "Data-root configuration/import and optional font discovery only; equations unchanged"
+    "released_sha256": "4594ac8d76c7dd2ef5b54ec32c25a25a1b31f6f9660e5235d218c1d02069670b",
+    "adaptation": "Data-root configuration/import and optional font discovery only; equations unchanged; remove manuscript-production wording from figure metadata/docstring only; equations unchanged"
   },
   {
     "source": "verify_experiment_checkpoints.py",

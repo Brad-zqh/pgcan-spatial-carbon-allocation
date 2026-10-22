@@ -32,7 +32,7 @@ if __name__=='__main__':
         'reference_patterns_adapted':['Map and distribution paired panels','Shared colourbars','Density plots with marginals','Controlled small-multiple comparisons'],
         'reference_handling':'Code and notebooks read as reference material only; supplied setup scripts, models and pipelines are not executed.',
         'export':'600 dpi PNG/TIFF and editable-text PDF/SVG; black Times New Roman text; global title and notes external',
-        'verification':'Coordinate label bounding boxes outside each frame; north-arrow containment and protected-feature intersections; current-source/DOCX checks; CVD simulations.'}
+        'verification':'Coordinate label bounding boxes outside each frame; north-arrow containment and protected-feature intersections; current source-figure checks; CVD simulations.'}
     (v.QA/'pink_green_revision_contract.json').write_text(json.dumps(contract,indent=2),encoding='utf-8')
     old=[a for a in json.loads((v.HERE/'figure_manifest.json').read_text(encoding='utf-8')) if a['figure']!='Figure_14']
     for name in selected:

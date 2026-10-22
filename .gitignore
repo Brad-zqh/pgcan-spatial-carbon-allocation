@@ -12,3 +12,20 @@ analysis/Figures/
 analysis/experiments/
 analysis/source_data/
 *.log
+
+# Manuscript files and private document-production materials
+*.doc
+*.docx
+*.docm
+*.dotx
+*.rtf
+manuscripts/
+handoff/
+Industry_CO2_Colleague_Handoff_*/
+Industry_CO2_Colleague_Handoff_*.zip
+**/*word*.py
+**/*docx*.py
+**/*word*.cjs
+**/*docx*.cjs
+**/*word*.ps1
+**/*docx*.ps1

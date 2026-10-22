@@ -1,4 +1,4 @@
-"""Compact Sensen-inspired architecture exhibit; native editable Word companion."""
+"""Compact architecture exhibit generated from the registered layer specification."""
 from pathlib import Path
 import os,json,hashlib
 P=Path(__file__).resolve().parent

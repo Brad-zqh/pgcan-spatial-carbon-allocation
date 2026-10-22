@@ -14,13 +14,28 @@
     },
     {
       "path": ".gitignore",
-      "bytes": 188,
-      "sha256": "04b7e117503b908ab8d09305dfb62ce26990f148e1c7ace921c6fd7f343de032"
+      "bytes": 475,
+      "sha256": "3d3452d6483c67a4c1ef23610b543061e2f81312cf1e8c180900ad541eb2067a"
+    },
+    {
+      "path": "CITATION.cff",
+      "bytes": 364,
+      "sha256": "63b123559c8a0bf0820b23382f4adad9279b771d23b8988a2bbb77c92283188e"
+    },
+    {
+      "path": "LICENSE",
+      "bytes": 1303,
+      "sha256": "ac388f9e13ee647f88314d17d53ebda77ffc68554036a1c0ba04544ab5d52737"
+    },
+    {
+      "path": "README.md",
+      "bytes": 6999,
+      "sha256": "9b7c14353bc9ff350ef897825aa21e8baa64b8b88effb2c15cebcc6c59feeb08"
     },
     {
       "path": "analysis/architecture_table.py",
-      "bytes": 3690,
-      "sha256": "e2cf1382020a241e67f71f26913f565a013ae36fa791a87099b79394cab5312f"
+      "bytes": 3692,
+      "sha256": "d2a496290b9370e7a458567d0dfe5ad3259350afe76bc01ba950bf8301b821ec"
     },
     {
       "path": "analysis/cartography_style.py",
@@ -113,11 +128,6 @@
       "sha256": "9bbbbc00e0c1e062ed1fd1b6d5988696847690168f60056e4b8b2c556e2181e9"
     },
     {
-      "path": "analysis/prepare_experiment_report.py",
-      "bytes": 18121,
-      "sha256": "52bbfa47557f160eb6c70e5eb1cb5f6e61e1b18c6644cd816cc9a78d9ee1362a"
-    },
-    {
       "path": "analysis/prepare_texture_basemap.py",
       "bytes": 4405,
       "sha256": "9cffa037deb91cc8358e23307dfa51ce32c6a18d445044f9fc16386daa1d2d0c"
@@ -134,8 +144,8 @@
     },
     {
       "path": "analysis/refine_palette_and_maps.py",
-      "bytes": 3850,
-      "sha256": "787d2df9ae5add1f9237af099c671c5051f579adda43eeb7c6bf85561a5e943e"
+      "bytes": 3852,
+      "sha256": "4594ac8d76c7dd2ef5b54ec32c25a25a1b31f6f9660e5235d218c1d02069670b"
     },
     {
       "path": "analysis/refined_primitives.py",
@@ -173,11 +183,6 @@
       "sha256": "9429b0315ca19ff169ca9346d1688abec1dff6f1f660502470bbbfb9c0c248b2"
     },
     {
-      "path": "CITATION.cff",
-      "bytes": 364,
-      "sha256": "5994c7ae8248ef4a1af27acd607a2a73b832550bf5e233cd1d1fb6fcc65383ae"
-    },
-    {
       "path": "configs/direct_baseline_protocol.json",
       "bytes": 395,
       "sha256": "a29bc494dcd0b18454104031f819eeae1776715d392f94a08f888398b16ee38d"
@@ -198,14 +203,14 @@
       "sha256": "d13504e9f4059e4774aa7f87a4a3c96f7aeb0705ce7ab93998a4f1ef509c2092"
     },
     {
-      "path": "data/input_schema.json",
-      "bytes": 1086,
-      "sha256": "94942326759eae26ee0113f125d2d491750bf2054ec691923bb59fa05a8eef20"
-    },
-    {
       "path": "data/README.md",
       "bytes": 2250,
       "sha256": "ad9d2c59e190d578d5d61022814ea6506a09c91983cf01efe6b6304e377b690c"
+    },
+    {
+      "path": "data/input_schema.json",
+      "bytes": 1086,
+      "sha256": "94942326759eae26ee0113f125d2d491750bf2054ec691923bb59fa05a8eef20"
     },
     {
       "path": "data/results/Architecture_parameter_ledger.csv",
@@ -248,11 +253,6 @@
       "sha256": "059a807425e15ae597095eb20e137f55132d3be0c1063387fc28d9d970f8a3f5"
     },
     {
-      "path": "data/results/cell_targets.csv",
-      "bytes": 128799,
-      "sha256": "c4a8cb6ffd01724400d2241ef0dc3dd79a23f9be7119be834d330109394edb53"
-    },
-    {
       "path": "data/results/Deep_channel_summary.csv",
       "bytes": 661,
       "sha256": "a569e40ddd786ac6d8b462acc261393dabe35fe10adaf94d03d5968c83992730"
@@ -266,6 +266,11 @@
       "path": "data/results/Model_architecture_display.csv",
       "bytes": 942,
       "sha256": "d3c9cd4932576be1784fb64aed2f63d140ffc1a630a33f96d3626d4cc62e413b"
+    },
+    {
+      "path": "data/results/cell_targets.csv",
+      "bytes": 128799,
+      "sha256": "c4a8cb6ffd01724400d2241ef0dc3dd79a23f9be7119be834d330109394edb53"
     },
     {
       "path": "data/results/oof_Clean_prior.npy",
@@ -423,6 +428,21 @@
       "sha256": "d8f0d56fe1878f59218176db5a269598bb5aa7dde8a7019a4cf003f56137ccaf"
     },
     {
+      "path": "docs/FRAMEWORK_CODE_AUDIT.md",
+      "bytes": 3443,
+      "sha256": "10c9ebbcbd2ca15d7edab769adb9b57289eba3ff5f3619a3766a210dbe17a69a"
+    },
+    {
+      "path": "docs/PUBLIC_SCOPE.md",
+      "bytes": 1742,
+      "sha256": "f59e10513bd5c4af1c11ddcecc78bb82d4ebabb455d7732a8f564063dc60e86b"
+    },
+    {
+      "path": "docs/SUPPLEMENTAL_REFERENCE_CHECK.md",
+      "bytes": 5376,
+      "sha256": "5e74529745cf48b1c3a5aafaf1af27047102865647d15847cef411a7a98019df"
+    },
+    {
       "path": "docs/assets/Figure_13.png",
       "bytes": 541729,
       "sha256": "60463973264200c77829f05546164b6c3cb08cb4a7163fb9f9a906be43e5e62d"
@@ -438,34 +458,14 @@
       "sha256": "1c43286797affc4f57f81d27a321521b227ce61996e1d4ea8ddc3c76362bb1c6"
     },
     {
-      "path": "docs/FRAMEWORK_CODE_AUDIT.md",
-      "bytes": 3443,
-      "sha256": "10c9ebbcbd2ca15d7edab769adb9b57289eba3ff5f3619a3766a210dbe17a69a"
-    },
-    {
       "path": "docs/source_manifest.json",
-      "bytes": 10689,
-      "sha256": "8b7ceca1a7317924b49a662ec49d681fd1a160cec47afe1e6d21192430c92c3f"
-    },
-    {
-      "path": "docs/SUPPLEMENTAL_REFERENCE_CHECK.md",
-      "bytes": 5376,
-      "sha256": "5e74529745cf48b1c3a5aafaf1af27047102865647d15847cef411a7a98019df"
-    },
-    {
-      "path": "LICENSE",
-      "bytes": 1303,
-      "sha256": "ac388f9e13ee647f88314d17d53ebda77ffc68554036a1c0ba04544ab5d52737"
+      "bytes": 10475,
+      "sha256": "842cb0d4dec45d7497f5cbc06bea13a4b0e456e53470565e18d9f1788f9cc807"
     },
     {
       "path": "pyproject.toml",
       "bytes": 677,
-      "sha256": "059db1829c1e7a0059307f013517b78dd50d7b0d755fe8e04b7dcb058d744236"
-    },
-    {
-      "path": "README.md",
-      "bytes": 6553,
-      "sha256": "d03152f6425b0b470faef48e1d5bce2dfeaa40954b9c6eff819c9b859ac3d08f"
+      "sha256": "d8e4d48cc193d3da8b57745c17eeca67ae0941449746b4f54c1345aa763c402f"
     },
     {
       "path": "scripts/import_local_workspace.py",
@@ -497,5 +497,10 @@
       "bytes": 845,
       "sha256": "35ffd34651436e3c55d7e80b2a89bdc3c6b89ea072f58f1524f929e46282e75b"
     }
-  ]
+  ],
+  "version": "0.1.1",
+  "word_documents_in_current_tree": 0,
+  "word_generation_entry_points_in_current_tree": 0,
+  "report_material_assembly_excluded": true,
+  "scientific_result_data_unchanged": true
 }
