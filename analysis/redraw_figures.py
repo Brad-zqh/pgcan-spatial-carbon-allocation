@@ -32,7 +32,7 @@ import cartography_style as carto
 import map_classification as mc
 from visual_polish import complete_heatmap_legends
 from figure_finish import compact_rows,compact_columns,align_matrix_bars
-from refined_primitives import value_bar,emphasis_line,row_tone
+from refined_primitives import value_bar,emphasis_line,row_tone,pink_green_row
 
 ROOT = Path(os.environ.get('PGCAN_PROJECT_ROOT',HERE.parent/'data/local/project'))
 WORK = ROOT / 'submission_revision_20260922'
@@ -651,7 +651,7 @@ def fig6():
         r=ns.loc[k];col=[INK,LILAC,CORAL,TEAL][i]
         values=seed_runs.loc[seed_runs.configuration.eq(k),'primary_coverage'].to_numpy()*100
         np.testing.assert_allclose([values.mean(),values.std(ddof=1)],[r.coverage*100,r.sd*100],atol=1e-10)
-        value_bar(b,r.coverage*100,i,row_tone(INK,i,len(rows)),height=.48,sd=r.sd*100,accent=True)
+        value_bar(b,r.coverage*100,i,pink_green_row(i,len(rows)),height=.48,sd=r.sd*100)
         b.text(1.04,i,f'{r.coverage*100:.3f}',transform=b.get_yaxis_transform(),fontsize=6.8,va='center')
     b.set_yticks(range(4),[v[1] for v in rows],fontsize=7);b.set(ylim=(3.6,-.6),xlim=(0,60))
     b.set_xticks([0,20,40,60]);b.set_xlabel('Coverage (%)');b.tick_params(axis='y',length=0);b.spines['left'].set_visible(False);quiet(b,'x')
@@ -676,7 +676,7 @@ def fig6():
     panel(d,'d','Paired neural-minus-baseline coverage')
     foot(f,'Training lines: five-seed mean; ribbons / bars: sample seed SD | Scenario ranges describe design sensitivity')
     save(f,'Figure_6',['new_training_history.json','new_summary.csv','prior_scenarios_256.csv','Data_S10_paired_scenarios.csv'],
-         'Constructed-target approximation, regularization changes and paired heuristic scenarios. Shaded training ribbons and capped coverage intervals show sample seed SD. Bounded bars in b show five-seed mean coverage. All four bars use a decorative pink-to-green internal gradient; green endpoints progress from light to dark by row, independent of coverage magnitude. Thin translucent under-strokes in d follow the exact stems and do not represent uncertainty.')
+         'Constructed-target approximation, regularization changes and paired heuristic scenarios. Shaded training ribbons and capped coverage intervals show sample seed SD. Bounded bars in b show five-seed mean coverage. Each of the four bars has a uniform fill; from top to bottom the colours are deep pink, pale pink, pale green and deep green. Colour distinguishes row order, independently of coverage magnitude. Thin translucent under-strokes in d follow the exact stems and do not represent uncertainty.')
 
 def figs1():
     f,axs=plt.subplots(2,2,figsize=(WIDTH,5.15));f.subplots_adjust(left=.06,right=.975,top=.94,bottom=.14,hspace=.55,wspace=.13)

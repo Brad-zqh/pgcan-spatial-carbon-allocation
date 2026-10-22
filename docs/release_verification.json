@@ -34,8 +34,8 @@
     },
     {
       "path": "analysis/enhanced_analysis.py",
-      "bytes": 31345,
-      "sha256": "73cc9e146e3857c8f34e540a7669904e9da5201c4119ada0adf3822be4f61936"
+      "bytes": 31358,
+      "sha256": "ae22e94fead826428baa5d4ca1b8a1c799637680991cf192c0f11b1e2cd79292"
     },
     {
       "path": "analysis/figure_finish.py",
@@ -129,8 +129,8 @@
     },
     {
       "path": "analysis/redraw_figures.py",
-      "bytes": 51676,
-      "sha256": "a79c57adb88bbe47e1a6a0919c01f99c7f9d798aedb379381477cdb7b2c6b748"
+      "bytes": 51725,
+      "sha256": "2e69fa45aa2a6cb541908b07b72d727bebcdbd3e280ff679782f1a015e7ec6f1"
     },
     {
       "path": "analysis/refine_palette_and_maps.py",
@@ -139,8 +139,8 @@
     },
     {
       "path": "analysis/refined_primitives.py",
-      "bytes": 5103,
-      "sha256": "8d597002833bc2d6af77fed6f9033cf99f79e96c5a69673a26ece0130a537062"
+      "bytes": 5417,
+      "sha256": "0b85a0cb599910980035975646386fada20c9b05a101be959bcd67a7c9c13769"
     },
     {
       "path": "analysis/run_direct_baselines.py",
@@ -445,7 +445,7 @@
     {
       "path": "docs/source_manifest.json",
       "bytes": 10689,
-      "sha256": "82398211f0922d82a275b1b2eb5acf63dbb7c5492c6b3664b72103a4356720f3"
+      "sha256": "8b7ceca1a7317924b49a662ec49d681fd1a160cec47afe1e6d21192430c92c3f"
     },
     {
       "path": "docs/SUPPLEMENTAL_REFERENCE_CHECK.md",

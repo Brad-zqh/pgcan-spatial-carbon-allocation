@@ -131,11 +131,11 @@ def enriched_main4():
     for ax in [a,c]:ax.axvline(10,c='#A9B9C1',ls=':',lw=.75);ax.set(xlim=(0,50),ylim=(0,102),xlabel='Top-ranked cells (%)');tickstyle(ax)
     a.set_ylabel('Regulatory-site coverage (%)');c.set_ylabel('Captured regional mass (%)')
     v.panel(a,'a','Coverage across thresholds');v.panel(c,'c','Mass concentration across thresholds')
-    from refined_primitives import value_bar,row_tone
+    from refined_primitives import value_bar,row_tone,pink_green_row
     for i,k in enumerate(METHODS):
         values=v.runs.loc[v.runs.method.eq(k),'primary_coverage'].to_numpy()*100
         mu=values.mean();sd=values.std(ddof=1) if len(values)>1 else 0
-        value_bar(b,mu,i,row_tone(v.INK,i,len(METHODS)),height=.52,sd=sd,accent=True)
+        value_bar(b,mu,i,pink_green_row(i,len(METHODS)),height=.52,sd=sd)
         txt=f'{mu:.3f}' if len(values)==1 else f'{mu:.3f} ± {sd:.3f}'
         b.text(1.02,i,txt,transform=b.get_yaxis_transform(),fontsize=6.8,va='center')
     b.set(yticks=range(7),xlim=(0,60),ylim=(6.6,-.6),xlabel='Site coverage (%)')
@@ -154,7 +154,7 @@ def enriched_main4():
     f.legend(*a.get_legend_handles_labels(),loc='lower left',bbox_to_anchor=(.07,.04),ncol=3,fontsize=6.5,handlelength=1.5,columnspacing=.8)
     v.foot(f,'Curves / cohort bars: fixed mean maps; panel b: per-run mean ± seed SD | The two cohorts share 59 sites and POI geolocation')
     v.save(f,'Figure_4',['coverage_curves.csv','metrics_runs.csv','energy_benchmark_sites.csv','allocation_500m.csv'],
-           'Coverage, captured mass, per-seed variation and paired regulatory / energy-user cohort coverage. Shared sites and geolocation limit cohort independence. Bars in b show per-run mean coverage, with capped sample-SD intervals; numerical labels retain three decimals. All seven bars in b use a decorative pink-to-green internal gradient, with green endpoints progressing from light to dark by row. Paired green/pink bars in d show the two exact fixed-map cohort coverages. Each bounded bar runs from zero to its actual value. In d the green and pink series each follow that row progression. Shade encodes row order, not magnitude; the internal gradient does not encode another statistic.')
+           'Coverage, captured mass, per-seed variation and paired regulatory / energy-user cohort coverage. Shared sites and geolocation limit cohort independence. Bars in b show per-run mean coverage, with capped sample-SD intervals; numerical labels retain three decimals. Each of the seven bars in b has a uniform fill; the rows progress from deep pink through pale pink and pale green to deep green. Colours distinguish row order and do not encode coverage magnitude or another statistic. Paired green/pink bars in d show the two exact fixed-map cohort coverages. Each bounded bar runs from zero to its actual value. In d the green and pink series each follow their own light-to-dark row progression.')
 
 def input_structure():
     corr=X[FEATURES].corr(method='spearman').to_numpy()

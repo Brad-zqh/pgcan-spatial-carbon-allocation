@@ -27,6 +27,12 @@ def row_tone(color,index,total):
     rgb=np.array(to_rgba(color)[:3]);strength=.32+.62*index/max(total-1,1)
     return tuple(1-strength*(1-rgb))
 
+def pink_green_row(index,total):
+    """One solid colour per row: deep pink, pale pink, pale green, deep green."""
+    cmap=LinearSegmentedColormap.from_list('pink_green_rows',
+        [(0,'#AD2C74'),(1/3,'#E7AFCE'),(.5,'#F5F4EE'),(2/3,'#C5DEA6'),(1,'#3F742E')],N=256)
+    return cmap(index/max(total-1,1))
+
 def _image(ax,rgba,extent,zorder=0,clip=None):
     limits=(ax.get_xlim(),ax.get_ylim());aspect=ax.get_aspect()
     autoscale=(ax.get_autoscalex_on(),ax.get_autoscaley_on())
